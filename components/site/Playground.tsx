@@ -562,6 +562,28 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
             {!filtered.length && (
               <p className="px-2 py-6 text-center text-[12px] text-ink-3">No matches</p>
             )}
+            <div className="mb-4 mt-2 border-t border-line pt-4">
+              <p className="mb-1 px-2 text-[10.5px] font-semibold uppercase tracking-widest text-ink-3">
+                Templates
+              </p>
+              {[
+                ["Dashboard", "/dashboard"],
+                ["Projects", "/projects"],
+                ["Tickets", "/tickets"],
+                ["Team", "/team"],
+                ["Settings", "/settings"],
+                ["Sign in", "/auth"],
+              ].map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="flex w-full items-center justify-between rounded-[7px] px-2 py-[5px] text-left text-[12.5px] text-ink-2 transition-colors hover:bg-hover hover:text-ink"
+                >
+                  {label}
+                  <span className="text-[11px] text-ink-3">↗</span>
+                </a>
+              ))}
+            </div>
           </nav>
         </aside>
 

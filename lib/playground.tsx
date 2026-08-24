@@ -41,8 +41,11 @@ import { AuthCard } from "@/components/blocks/AuthCard";
 import { ChartCard } from "@/components/blocks/ChartCard";
 import { EmptyState } from "@/components/blocks/EmptyState";
 import { FilterToolbar } from "@/components/blocks/FilterToolbar";
+import { MemberList } from "@/components/blocks/MemberList";
+import { ProjectCard } from "@/components/blocks/ProjectCard";
 import { SettingsSection, SettingsRow } from "@/components/blocks/SettingsSection";
 import { StatsRow } from "@/components/blocks/StatsRow";
+import { TicketList } from "@/components/blocks/TicketList";
 
 /* primitives */
 import ApprovalCard from "@/components/primitives/ApprovalCard";
@@ -957,5 +960,69 @@ export const PLAYGROUND: Playable[] = [
       </div>
     ),
     note: "Interactive — the switch and select are the real atoms.",
+  },
+  {
+    id: "project-card",
+    category: "Blocks",
+    title: "Project Card",
+    caption: "Status, progress and ownership for project grids.",
+    controls: [
+      {
+        type: "select",
+        key: "status",
+        label: "Status",
+        options: ["on-track", "at-risk", "done"].map((v) => ({ label: v, value: v })),
+      },
+      { type: "slider", key: "progress", label: "Progress", min: 0, max: 100, step: 1, suffix: "%" },
+    ],
+    defaults: { status: "on-track", progress: 72 },
+    demo: (v) => (
+      <div className="w-full max-w-80">
+        <ProjectCard
+          name="Dashboard blocks"
+          description="Chart cards, stat rows, activity feeds and the filter toolbar."
+          status={v.status}
+          progress={v.progress / 100}
+          members={["TB", "AN", "AI"]}
+          updated="1d ago"
+        />
+      </div>
+    ),
+  },
+  {
+    id: "ticket-list",
+    category: "Blocks",
+    title: "Ticket List",
+    caption: "Linear-style rows — status glyph, labels, priority, assignee.",
+    demo: () => (
+      <div className="w-full max-w-2xl">
+        <TicketList
+          tickets={[
+            { id: "BUI-101", title: "Theme engine: neutral hue + tint sliders", status: "done", priority: 3, labels: ["studio"], assignee: "SK", date: "Aug 24" },
+            { id: "BUI-105", title: "Templates: settings and auth pages", status: "progress", priority: 2, labels: ["templates"], assignee: "TB", date: "Aug 25" },
+            { id: "BUI-106", title: "Chart card: area and line variants", status: "todo", priority: 1, labels: ["blocks"], assignee: "AN", date: "Aug 26" },
+            { id: "BUI-108", title: "Mobile nav drawer for AppShell", status: "backlog", priority: 0, labels: ["shell"], assignee: "AI", date: "Aug 28" },
+          ]}
+        />
+      </div>
+    ),
+  },
+  {
+    id: "member-list",
+    category: "Blocks",
+    title: "Member List",
+    caption: "Team rows — role select, status pill, row menu.",
+    demo: () => (
+      <div className="w-full max-w-xl">
+        <MemberList
+          members={[
+            { id: "1", name: "Skander K.", email: "skander@vizion.io", role: "Owner", status: "active", lastActive: "now" },
+            { id: "2", name: "Turbo B.", email: "turbo@vizion.io", role: "Admin", status: "active", lastActive: "2m" },
+            { id: "5", name: "Mira L.", email: "mira@partner.co", role: "Viewer", status: "invited", lastActive: "—" },
+          ]}
+        />
+      </div>
+    ),
+    note: "Interactive — change a role, open the row menu.",
   },
 ];
