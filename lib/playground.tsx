@@ -37,8 +37,11 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 
 /* blocks */
 import { ActivityFeed } from "@/components/blocks/ActivityFeed";
+import { AuthCard } from "@/components/blocks/AuthCard";
 import { ChartCard } from "@/components/blocks/ChartCard";
+import { EmptyState } from "@/components/blocks/EmptyState";
 import { FilterToolbar } from "@/components/blocks/FilterToolbar";
+import { SettingsSection, SettingsRow } from "@/components/blocks/SettingsSection";
 import { StatsRow } from "@/components/blocks/StatsRow";
 
 /* primitives */
@@ -890,5 +893,69 @@ export const PLAYGROUND: Playable[] = [
         />
       </div>
     ),
+  },
+  {
+    id: "empty-state",
+    category: "Blocks",
+    title: "Empty State",
+    caption: "The zero-data moment — icon well, guidance, one action.",
+    demo: () => (
+      <div className="w-full max-w-md rounded-card border border-line bg-surface shadow-hairline">
+        <EmptyState
+          icon={
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          }
+          title="No sessions yet"
+          description="Start a session and the agent's work shows up here."
+          action={<Button variant="accent" size="sm">New session</Button>}
+        />
+      </div>
+    ),
+  },
+  {
+    id: "auth-card",
+    category: "Blocks",
+    title: "Auth Card",
+    caption: "Sign-in panel — provider first, credentials under the rule.",
+    demo: () => <AuthCard />,
+  },
+  {
+    id: "settings-section",
+    category: "Blocks",
+    title: "Settings Section",
+    caption: "The settings-page unit — header, then label/control rows.",
+    demo: () => (
+      <div className="w-full max-w-md">
+        <SettingsSection title="Workspace" description="Shown to every member.">
+          <SettingsRow
+            label="Name"
+            description="The workspace's display name."
+            control={<Input defaultValue="Beautiful UI" className="w-44" aria-label="Workspace name" />}
+          />
+          <SettingsRow
+            label="Public sessions"
+            description="Anyone with the link can watch a session."
+            control={<Switch defaultChecked={false} label="Public sessions" />}
+          />
+          <SettingsRow
+            label="Region"
+            description="Where sessions are processed."
+            control={
+              <Select defaultValue="eu">
+                <SelectTrigger className="w-36" />
+                <SelectContent>
+                  <SelectItem value="eu">EU (Frankfurt)</SelectItem>
+                  <SelectItem value="us">US (Virginia)</SelectItem>
+                  <SelectItem value="ap">AP (Singapore)</SelectItem>
+                </SelectContent>
+              </Select>
+            }
+          />
+        </SettingsSection>
+      </div>
+    ),
+    note: "Interactive — the switch and select are the real atoms.",
   },
 ];

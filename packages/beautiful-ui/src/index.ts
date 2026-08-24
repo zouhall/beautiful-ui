@@ -82,6 +82,9 @@ export { default as ToolChips, type LiveTool } from "./primitives/ToolChips";
 
 /* blocks */
 export { ActivityFeed, type ActivityItem } from "./blocks/ActivityFeed";
+export { AuthCard } from "./blocks/AuthCard";
 export { ChartCard } from "./blocks/ChartCard";
+export { EmptyState } from "./blocks/EmptyState";
 export { FilterToolbar, type Facet, type ActiveFilter } from "./blocks/FilterToolbar";
+export { SettingsSection, SettingsRow } from "./blocks/SettingsSection";
 export { StatsRow, type StatDef } from "./blocks/StatsRow";
