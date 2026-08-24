@@ -16,7 +16,7 @@ export default function PageHeader({
   return (
     <div className={`flex flex-wrap items-end justify-between gap-3 ${className}`}>
       <div className="min-w-0">
-        <h1 className="text-[17px] font-semibold tracking-tight text-ink">{title}</h1>
+        <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-ink">{title}</h1>
         {description ? (
           <p className="mt-0.5 text-[12.5px] text-ink-3">{description}</p>
         ) : null}

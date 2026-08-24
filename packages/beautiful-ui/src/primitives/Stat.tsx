@@ -20,7 +20,7 @@ export default function Stat({
     <div className={`rounded-card border border-line bg-surface p-4 shadow-hairline ${className}`}>
       <p className="text-[11.5px] font-medium text-ink-3">{label}</p>
       <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-[22px] font-semibold tracking-tight tabular-nums text-ink">
+        <span className="text-[26px] font-semibold tracking-[-0.02em] tabular-nums text-ink">
           {value}
         </span>
         {delta != null && <Delta value={delta} />}

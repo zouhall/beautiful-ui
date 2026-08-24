@@ -60,8 +60,25 @@ export default function DashboardPage() {
             title="Revenue"
             value="$18,240"
             delta={9.4}
+            variant="area"
+            series="ink"
             data={[32, 48, 41, 56, 47, 62, 58, 71, 66, 78, 72, 84]}
           />
+          <ChartCard
+            title="Sessions"
+            value="8,412"
+            delta={4.1}
+            variant="bar"
+            series="ink"
+            data={[22, 35, 28, 44, 39, 52, 47, 58, 51, 63, 57, 69]}
+          />
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+          <div className="min-w-0 space-y-3">
+            <FilterToolbar />
+            <RecordsTable variant="Clients" />
+          </div>
           <ActivityFeed
             items={[
               { id: "1", initials: "SK", name: "Skander", action: "merged the studio theme engine", time: "2m" },
@@ -71,11 +88,6 @@ export default function DashboardPage() {
               { id: "5", initials: "SK", name: "Skander", action: "closed the Q3 pricing review", time: "5h" },
             ]}
           />
-        </div>
-
-        <div className="space-y-3">
-          <FilterToolbar />
-          <RecordsTable variant="Clients" />
         </div>
       </div>
     </AppShell>
