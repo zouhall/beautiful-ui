@@ -448,11 +448,11 @@ export default function SidebarNav({
           </GlideGroup>
         </div>
 
-        <div className="sidebar-copy mx-2 mt-3 w-[208px] border-t border-line pt-3">
+        <div className="sidebar-copy mx-2 mt-auto w-[208px] pt-3 pb-2">
           <button
             type="button"
             onClick={onFooterClick ?? onNewChat}
-            className="flex h-8 w-full items-center justify-center gap-1.5 rounded-control bg-hover-2 text-[12.5px] font-medium text-ink transition-[background-color,transform] duration-150 hover:bg-line-strong active:scale-[0.98]"
+            className="flex h-9 w-full items-center justify-center gap-1.5 rounded-control border border-line bg-surface text-[13px] font-medium text-ink shadow-hairline transition-[background-color,border-color,transform] duration-150 hover:bg-hover hover:border-line-strong active:scale-[0.98]"
           >
             {footerIcon}
             {footerLabel}

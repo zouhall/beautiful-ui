@@ -444,10 +444,12 @@ function InputPicker({
 
 export default function RecordsTable({
   fill = false,
+  unconstrained = false,
   variant,
   rows: rowsProp,
 }: {
   fill?: boolean;
+  unconstrained?: boolean;
   variant?: string;
   rows?: Row[];
 }) {
@@ -488,7 +490,7 @@ export default function RecordsTable({
    * widths before paint. From that point on every column is explicit, so a
    * resize changes only the dragged column and the table's total width. */
   useLayoutEffect(() => {
-    if (columnWidthsLocked || !tableRef.current) return;
+    if (columnWidthsLocked || !tableRef.current || unconstrained) return;
     const headers = Array.from(tableRef.current.querySelectorAll<HTMLTableCellElement>("thead th"));
     if (headers.length < 6) return;
 
@@ -635,7 +637,7 @@ export default function RecordsTable({
   const tableWidth = columnWidths.company + columnWidths.categories + columnWidths.last + columnWidths.strength + columnWidths.links + (aiAdded ? columnWidths.ai : 0) + actionColumnWidth;
 
   return (
-    <div className={`records-shell${fill ? " is-fill" : ""}${variant === "Clients" ? " is-clients" : ""}`}>
+    <div className={`records-shell${fill ? " is-fill" : ""}${variant === "Clients" ? " is-clients" : ""}${unconstrained ? " is-unconstrained" : ""}`}>
       <div
         className="records-scroll"
         tabIndex={0}
@@ -653,15 +655,15 @@ export default function RecordsTable({
           setTableMenuOpen(null);
         }}
       >
-        <table ref={tableRef} className="records-table" style={{ width: columnWidthsLocked ? tableWidth : "100%", minWidth: tableWidth }}>
+        <table ref={tableRef} className="records-table" style={{ width: unconstrained ? "100%" : (columnWidthsLocked ? tableWidth : "100%"), minWidth: unconstrained ? "100%" : tableWidth }}>
           <colgroup>
-            <col className="records-company-col" style={{ width: columnWidths.company }} />
-            <col className="records-category-col" style={{ width: columnWidths.categories }} />
-            <col className="records-last-col" style={{ width: columnWidths.last }} />
-            <col className="records-strength-col" style={{ width: columnWidths.strength }} />
-            <col className="records-link-col" style={{ width: columnWidths.links }} />
+            <col className="records-company-col" style={{ width: unconstrained ? "26%" : columnWidths.company }} />
+            <col className="records-category-col" style={{ width: unconstrained ? "24%" : columnWidths.categories }} />
+            <col className="records-last-col" style={{ width: unconstrained ? "16%" : columnWidths.last }} />
+            <col className="records-strength-col" style={{ width: unconstrained ? "18%" : columnWidths.strength }} />
+            <col className="records-link-col" style={{ width: unconstrained ? "16%" : columnWidths.links }} />
             {aiAdded && <col style={{ width: columnWidths.ai }} />}
-            <col style={{ width: 100 }} />
+            {!unconstrained && <col style={{ width: 100 }} />}
           </colgroup>
           <thead>
             <tr>
@@ -685,42 +687,44 @@ export default function RecordsTable({
                   <span role="separator" aria-orientation="vertical" aria-label={`Resize ${AI_LABEL} column`} className={`records-resize-handle ${resizingColumn === "ai" ? "is-resizing" : ""}`} onPointerDown={startColumnResize("ai")} />
                 </th>
               )}
-              <th className="records-header-cell">
-                <div className="flex h-[35px] items-center gap-1 px-2">
-                  <button
-                    type="button"
-                    aria-label="New property"
-                    data-recpop
-                    onClick={(event) => {
-                      setProp(null);
-                      setTableMenuOpen(null);
-                      const rect = (event.currentTarget as Element).getBoundingClientRect();
-                      setAddOpen((current) => (current ? null : { x: Math.min(rect.left, window.innerWidth - 276), y: rect.bottom + 6 }));
-                    }}
-                    className="flex size-7 items-center justify-center rounded-[7px] text-ink-2 transition-colors duration-100 hover:bg-hover hover:text-ink"
-                  >
-                    <Icon size={15} strokeWidth={2}><path d="M12 5v14M5 12h14" /></Icon>
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Table options"
-                    aria-expanded={!!tableMenuOpen}
-                    data-recpop
-                    onClick={(event) => {
-                      setProp(null);
-                      setAddOpen(null);
-                      const rect = event.currentTarget.getBoundingClientRect();
-                      setTableMenuOpen((current) => current ? null : {
-                        x: Math.max(8, Math.min(rect.right - 220, window.innerWidth - 228)),
-                        y: rect.bottom + 6,
-                      });
-                    }}
-                    className="flex size-7 items-center justify-center rounded-[7px] text-ink-3 transition-colors duration-100 hover:bg-hover hover:text-ink"
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
-                  </button>
-                </div>
-              </th>
+              {!unconstrained && (
+                <th className="records-header-cell">
+                  <div className="flex h-[35px] items-center gap-1 px-2">
+                    <button
+                      type="button"
+                      aria-label="New property"
+                      data-recpop
+                      onClick={(event) => {
+                        setProp(null);
+                        setTableMenuOpen(null);
+                        const rect = (event.currentTarget as Element).getBoundingClientRect();
+                        setAddOpen((current) => (current ? null : { x: Math.min(rect.left, window.innerWidth - 276), y: rect.bottom + 6 }));
+                      }}
+                      className="flex size-7 items-center justify-center rounded-[7px] text-ink-2 transition-colors duration-100 hover:bg-hover hover:text-ink"
+                    >
+                      <Icon size={15} strokeWidth={2}><path d="M12 5v14M5 12h14" /></Icon>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Table options"
+                      aria-expanded={!!tableMenuOpen}
+                      data-recpop
+                      onClick={(event) => {
+                        setProp(null);
+                        setAddOpen(null);
+                        const rect = event.currentTarget.getBoundingClientRect();
+                        setTableMenuOpen((current) => current ? null : {
+                          x: Math.max(8, Math.min(rect.right - 220, window.innerWidth - 228)),
+                          y: rect.bottom + 6,
+                        });
+                      }}
+                      className="flex size-7 items-center justify-center rounded-[7px] text-ink-3 transition-colors duration-100 hover:bg-hover hover:text-ink"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
+                    </button>
+                  </div>
+                </th>
+              )}
             </tr>
           </thead>
           {/* data cells stay silent — the papery link/flick sound is too much when scanning rows */}
@@ -739,7 +743,7 @@ export default function RecordsTable({
                     {calc?.col === AI_LABEL ? (index < calc.resolved ? competitorsFor(index) : <CalcCell />) : aiDone ? competitorsFor(index) : <span className="records-muted">—</span>}
                   </td>
                 )}
-                <td className="records-cell" />
+                {!unconstrained && <td className="records-cell" />}
               </tr>;
             })}
           </tbody>
@@ -757,7 +761,7 @@ export default function RecordsTable({
               </td>
               <td className="records-cell"><span className="records-footer-value records-muted">{rows.filter((row) => row.website).length} links</span></td>
               {aiAdded && <td className="records-cell records-muted"><span className="records-footer-value">{aiDone ? `${rows.length} filled` : "—"}</span></td>}
-              <td className="records-cell" />
+              {!unconstrained && <td className="records-cell" />}
             </tr>
           </tfoot>
         </table>

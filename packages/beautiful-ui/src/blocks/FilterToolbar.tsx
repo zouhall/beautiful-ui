@@ -70,8 +70,8 @@ export function FilterToolbar({
           if (!o) setFacetView(null);
         }}
       >
-        <PopoverTrigger className="flex h-8 items-center gap-1.5 rounded-control border border-dashed border-line-strong px-2.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:bg-hover hover:text-ink">
-          <IconPlus />
+        <PopoverTrigger className="flex h-7 items-center gap-1.5 rounded-full border border-dashed border-line-strong bg-surface px-2.5 text-[11.5px] font-medium text-ink-2 shadow-hairline transition-colors hover:border-line-strong hover:bg-hover hover:text-ink">
+          <IconPlus size={11} />
           Filter
           {active.length > 0 && <Badge tone="accent">{active.length}</Badge>}
         </PopoverTrigger>
@@ -131,16 +131,16 @@ export function FilterToolbar({
       {active.map((f) => (
         <span
           key={f.facet}
-          className="flex h-8 items-center gap-1.5 rounded-control border border-line bg-surface px-2 text-[12.5px] text-ink-2 shadow-hairline"
+          className="flex h-7 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[11.5px] text-ink-2 shadow-hairline"
         >
           <span className="text-ink-3">{f.facetLabel}:</span>
           <span className="font-medium text-ink">{f.value}</span>
           <button
             onClick={() => remove(f.facet)}
             aria-label={`Remove ${f.facetLabel} filter`}
-            className="ml-0.5 flex size-4 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-hover-2 hover:text-ink"
+            className="ml-0.5 flex size-3.5 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-hover-2 hover:text-ink"
           >
-            <IconX size={9} />
+            <IconX size={8} />
           </button>
         </span>
       ))}

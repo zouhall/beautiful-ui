@@ -509,7 +509,8 @@ a:focus-visible .animated-underline::after {
 }
 
 .records-shell.is-fill .records-scroll,
-.records-shell.is-clients .records-scroll {
+.records-shell.is-clients .records-scroll,
+.records-shell.is-unconstrained .records-scroll {
   max-height: none;
   flex: 1;
 }
@@ -697,7 +698,6 @@ a:focus-visible .animated-underline::after {
 
 .records-table {
   width: 100%;
-  min-width: 990px;
   border-collapse: separate;
   border-spacing: 0;
   color: var(--ink);

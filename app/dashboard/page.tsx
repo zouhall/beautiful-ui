@@ -18,8 +18,30 @@ export const metadata: Metadata = {
     "The app-skeleton template: AppShell + PageHeader + stats, chart, activity and records blocks, all on the Beautiful UI tokens.",
 };
 
-/* The template: every section is one block from packages/beautiful-ui.
- * Copy this page, swap the data, ship. */
+const REVENUE_SERIES = [
+  { label: "Jan", value: 9200 },
+  { label: "Feb", value: 12400 },
+  { label: "Mar", value: 11100 },
+  { label: "Apr", value: 14800 },
+  { label: "May", value: 13900 },
+  { label: "Jun", value: 18240 },
+  { label: "Jul", value: 17100 },
+  { label: "Aug", value: 21400 },
+  { label: "Sep", value: 19800 },
+  { label: "Oct", value: 24200 },
+  { label: "Nov", value: 22800 },
+  { label: "Dec", value: 28700 },
+];
+
+const SESSIONS_BARS = [
+  { label: "M", value: 4200 },
+  { label: "T", value: 5800 },
+  { label: "W", value: 5100 },
+  { label: "T", value: 7400 },
+  { label: "F", value: 6900 },
+  { label: "S", value: 8412 },
+  { label: "S", value: 7900 },
+];
 
 export default function DashboardPage() {
   return (
@@ -35,10 +57,11 @@ export default function DashboardPage() {
         </>
       }
     >
-      <div className="mx-auto max-w-5xl space-y-4 p-6">
+      <div className="mx-auto max-w-6xl space-y-6 p-6 sm:p-8">
+        {/* Page Top Header */}
         <PageHeader
           title="Overview"
-          description="Revenue, usage and what the team is up to."
+          description="Real-time revenue, activity velocity, and customer records."
           actions={
             <>
               <Button variant="secondary" size="sm">Export</Button>
@@ -47,45 +70,75 @@ export default function DashboardPage() {
           }
         />
 
+        {/* Primary KPIs */}
         <StatsRow
           stats={[
-            { label: "Revenue", value: "$18,240", delta: 9.4, hint: "vs. last month" },
-            { label: "Active users", value: "1,424", delta: 5.2, hint: "vs. last month" },
-            { label: "Churn", value: "1.9%", delta: -0.4, hint: "vs. last month" },
+            { label: "Total Revenue", value: "$28,712", delta: 14.8, hint: "vs. last period" },
+            { label: "Active Clients", value: "1,424", delta: 5.2, hint: "vs. last month" },
+            { label: "Session Velocity", value: "8,412 /wk", delta: 4.1, hint: "avg 12m duration" },
+            { label: "Churn Rate", value: "1.9%", delta: -0.4, hint: "industry low" },
           ]}
         />
 
-        <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        {/* Charts & Activity Grid */}
+        <div className="grid gap-4 lg:grid-cols-3">
           <ChartCard
-            title="Revenue"
-            value="$18,240"
-            delta={9.4}
+            title="Revenue Trajectory"
+            value="$28,712"
+            delta={14.8}
             variant="area"
             series="ink"
-            data={[32, 48, 41, 56, 47, 62, 58, 71, 66, 78, 72, 84]}
+            data={REVENUE_SERIES}
+            periods={["6M", "YTD", "1Y"]}
+            className="lg:col-span-2"
           />
           <ChartCard
-            title="Sessions"
+            title="Daily Sessions"
             value="8,412"
             delta={4.1}
             variant="bar"
-            series="ink"
-            data={[22, 35, 28, 44, 39, 52, 47, 58, 51, 63, 57, 69]}
+            series="accent"
+            data={SESSIONS_BARS}
+            periods={["7D", "30D"]}
           />
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-          <div className="min-w-0 space-y-3">
+        {/* Full-width interactive records table */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-[14px] font-semibold tracking-[-0.01em] text-ink">
+                Active Client Records
+              </span>
+              <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[10.5px] font-medium text-accent-ink">
+                Live sync
+              </span>
+            </div>
             <FilterToolbar />
-            <RecordsTable variant="Clients" />
           </div>
+
+          <div className="overflow-hidden rounded-card border border-line bg-surface shadow-card">
+            <RecordsTable variant="Clients" unconstrained fill={false} />
+          </div>
+        </div>
+
+        {/* Activity velocity row */}
+        <div className="grid gap-4 lg:grid-cols-2">
           <ActivityFeed
+            title="Recent System Actions"
             items={[
-              { id: "1", initials: "SK", name: "Skander", action: "merged the studio theme engine", time: "2m" },
-              { id: "2", initials: "TB", name: "Turbo", action: "shipped 16 overlay atoms", time: "18m" },
-              { id: "3", initials: "AI", name: "Agent", action: "re-themed 46 components to Warm", time: "1h" },
-              { id: "4", initials: "AN", name: "Ana", action: "commented on the dashboard template", time: "3h" },
-              { id: "5", initials: "SK", name: "Skander", action: "closed the Q3 pricing review", time: "5h" },
+              { id: "1", initials: "SK", name: "Skander", action: "merged the studio theme engine", time: "2m ago" },
+              { id: "2", initials: "TB", name: "Turbo", action: "shipped 16 overlay atoms and chart cards", time: "18m ago" },
+              { id: "3", initials: "AI", name: "Agent", action: "re-themed 46 components to Warm preset", time: "1h ago" },
+              { id: "4", initials: "AN", name: "Ana", action: "commented on the client roster schema", time: "3h ago" },
+            ]}
+          />
+          <ActivityFeed
+            title="Agentic Workstream Trace"
+            items={[
+              { id: "a1", initials: "AI", name: "Codex Sol", action: "resolved customer verification batch", time: "4m ago" },
+              { id: "a2", initials: "AI", name: "Fable 5", action: "synchronized vector context for 12 clients", time: "22m ago" },
+              { id: "a3", initials: "SK", name: "Skander", action: "approved payment disbursement in /harness", time: "2h ago" },
             ]}
           />
         </div>
