@@ -27,7 +27,7 @@ export default function DashboardPage() {
       sidebar={<SidebarNav />}
       header={
         <>
-          <Input placeholder="Search…" className="max-w-56" />
+          <Input placeholder="Search…" aria-label="Search" className="max-w-56" />
           <div className="ml-auto flex items-center gap-3">
             <ThemeToggle />
             <Avatar fallback="SK" size={26} />

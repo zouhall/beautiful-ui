@@ -90,14 +90,12 @@ function PropsPanel({
   values,
   setValue,
   codeOpen,
-  source,
   setCodeOpen,
 }: {
   playable: Playable;
   values: Record<string, any>;
   setValue: (k: string, v: any) => void;
   codeOpen: boolean;
-  source: string;
   setCodeOpen: (v: boolean) => void;
 }) {
   return (
@@ -138,7 +136,7 @@ function PropsPanel({
 
 /* ── code overlay ─────────────────────────────────────── */
 
-function CodeView({ source, onClose }: { source: string; onClose: () => void }) {
+function CodeView({ source, name, onClose }: { source: string; name: string; onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -151,7 +149,7 @@ function CodeView({ source, onClose }: { source: string; onClose: () => void }) 
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative flex h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-window bg-surface shadow-overlay">
         <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
-          <span className="font-mono text-[12px] text-ink-2">component.tsx</span>
+          <span className="font-mono text-[12px] text-ink-2">{name}</span>
           <button
             onClick={onClose}
             className="rounded-[6px] px-2 py-1 text-[12px] text-ink-3 transition-colors hover:bg-hover hover:text-ink-2"
@@ -494,7 +492,6 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
               onClick={() => setStudioOpen(true)}
               className="flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-[12px] font-medium text-white shadow-btn transition-transform active:scale-[0.97]"
             >
-              <span className="size-3 rounded-full bg-white/40" style={{ background: "transparent" }} />
               <span className="size-3 rounded-full ring-1 ring-white/60" style={{ background: theme.accent }} />
               Theme
             </button>
@@ -527,6 +524,7 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search components…"
+                aria-label="Search components"
                 className="w-full rounded-control border border-line bg-field py-1.5 pl-8 pr-3 text-[12.5px] text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-accent"
               />
             </div>
@@ -578,7 +576,6 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
               setValue={setValue}
               codeOpen={codeOpen}
               setCodeOpen={setCodeOpen}
-              source={sourceOf(playable)}
             />
           )}
         </main>
@@ -606,7 +603,13 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
       )}
 
       <Studio open={studioOpen} theme={theme} setTheme={setTheme} onClose={() => setStudioOpen(false)} />
-      {codeOpen && <CodeView source={sourceOf(playable)} onClose={() => setCodeOpen(false)} />}
+      {codeOpen && (
+        <CodeView
+          source={sourceOf(playable)}
+          name={`${playable.file ?? playable.title.replace(" ", "")}.tsx`}
+          onClose={() => setCodeOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -663,14 +666,12 @@ function FocusMode({
   setValue,
   codeOpen,
   setCodeOpen,
-  source,
 }: {
   playable: Playable;
   current: Record<string, any>;
   setValue: (k: string, v: any) => void;
   codeOpen: boolean;
   setCodeOpen: (v: boolean) => void;
-  source: string;
 }) {
   return (
     <div className="grid gap-4 xl:grid-cols-[1fr_300px]">
@@ -696,7 +697,6 @@ function FocusMode({
           values={current}
           setValue={setValue}
           codeOpen={codeOpen}
-          source={source}
           setCodeOpen={setCodeOpen}
         />
       </div>
