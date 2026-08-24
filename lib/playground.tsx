@@ -35,6 +35,12 @@ import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/atoms/Tabs";
 import { TextRow } from "@/components/atoms/TextRow";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/atoms/Tooltip";
 
+/* blocks */
+import { ActivityFeed } from "@/components/blocks/ActivityFeed";
+import { ChartCard } from "@/components/blocks/ChartCard";
+import { FilterToolbar } from "@/components/blocks/FilterToolbar";
+import { StatsRow } from "@/components/blocks/StatsRow";
+
 /* primitives */
 import ApprovalCard from "@/components/primitives/ApprovalCard";
 import ChatComposer from "@/components/primitives/ChatComposer";
@@ -58,7 +64,7 @@ import TaskRows from "@/components/primitives/TaskRows";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips from "@/components/primitives/ToolChips";
 
-export type Category = "Agent" | "Data" | "Overlays" | "Atoms";
+export type Category = "Agent" | "Data" | "Overlays" | "Atoms" | "Blocks";
 
 export type Control =
   | {
@@ -98,7 +104,7 @@ const auto =
   (C: ComponentType<any>, extra?: (v: any) => Record<string, any>) =>
   (values: Record<string, any>) => <C {...values} {...(extra?.(values) ?? {})} />;
 
-export const CATEGORY_ORDER: Category[] = ["Agent", "Data", "Overlays", "Atoms"];
+export const CATEGORY_ORDER: Category[] = ["Agent", "Data", "Overlays", "Atoms", "Blocks"];
 
 export const PLAYGROUND: Playable[] = [
   /* ────────────────────────── AGENT ────────────────────────── */
@@ -820,6 +826,68 @@ export const PLAYGROUND: Playable[] = [
         <p className="text-[12.5px] text-ink-2">Above the rule</p>
         <Separator className="my-3" />
         <p className="text-[12.5px] text-ink-3">Below the rule</p>
+      </div>
+    ),
+  },
+
+  /* ────────────────────────── BLOCKS ───────────────────────── */
+  {
+    id: "filter-toolbar",
+    category: "Blocks",
+    title: "Filter Toolbar",
+    caption: "Faceted filter popover with removable chips.",
+    demo: () => <FilterToolbar />,
+    note: "Interactive — open Filter, pick a facet, then an option. Chips are removable.",
+  },
+  {
+    id: "chart-card",
+    category: "Blocks",
+    title: "Chart Card",
+    caption: "Rounded bars over a track, period switcher, count headline.",
+    demo: () => (
+      <div className="w-full max-w-96">
+        <ChartCard
+          title="Revenue"
+          value="$18,240"
+          delta={9.4}
+          data={[32, 48, 41, 56, 47, 62, 58, 71, 66, 78, 72, 84]}
+        />
+      </div>
+    ),
+    note: "Bars are divs on the accent token — the theme studio re-skins the chart.",
+  },
+  {
+    id: "stats-row",
+    category: "Blocks",
+    title: "Stats Row",
+    caption: "The dashboard top line — stats in an even grid.",
+    demo: () => (
+      <div className="w-full max-w-2xl">
+        <StatsRow
+          stats={[
+            { label: "Revenue", value: "$18,240", delta: 9.4 },
+            { label: "Active users", value: "1,424", delta: 5.2 },
+            { label: "Churn", value: "1.9%", delta: -0.4 },
+          ]}
+        />
+      </div>
+    ),
+  },
+  {
+    id: "activity-feed",
+    category: "Blocks",
+    title: "Activity Feed",
+    caption: "Who did what, when — rows on the divide.",
+    demo: () => (
+      <div className="w-full max-w-md">
+        <ActivityFeed
+          items={[
+            { id: "1", initials: "SK", name: "Skander", action: "merged the studio theme engine", time: "2m" },
+            { id: "2", initials: "TB", name: "Turbo", action: "shipped 16 overlay atoms", time: "18m" },
+            { id: "3", initials: "AI", name: "Agent", action: "re-themed 46 components to Warm", time: "1h" },
+            { id: "4", initials: "AN", name: "Ana", action: "commented on the dashboard template", time: "3h" },
+          ]}
+        />
       </div>
     ),
   },

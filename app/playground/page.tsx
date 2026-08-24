@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 function readSources(): Record<string, string> {
   const dir = path.join(process.cwd(), "packages", "beautiful-ui", "src");
   const map: Record<string, string> = {};
-  for (const sub of ["primitives", "atoms"]) {
+  for (const sub of ["primitives", "atoms", "blocks"]) {
     const subDir = path.join(dir, sub);
     let files: string[] = [];
     try {

@@ -17,6 +17,7 @@
     "paths": {
       "@/components/atoms/*": ["./packages/beautiful-ui/src/atoms/*"],
       "@/components/primitives/*": ["./packages/beautiful-ui/src/primitives/*"],
+      "@/components/blocks/*": ["./packages/beautiful-ui/src/blocks/*"],
       "@/*": ["./*"]
     }
   },

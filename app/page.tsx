@@ -42,6 +42,12 @@ export default function Home() {
               >
                 Studio ↗
               </Link>
+              <Link
+                href="/dashboard"
+                className="flex h-9 items-center rounded-full border border-line bg-surface px-3 text-[12px] font-medium text-ink-2 shadow-hairline transition-colors hover:border-accent hover:text-accent-ink"
+              >
+                Dashboard ↗
+              </Link>
             </div>
 
             <h1 className="mt-12 text-[21px] leading-snug font-semibold tracking-[-0.02em] text-ink text-balance lg:mt-[clamp(1.5rem,5vh,3rem)]">
