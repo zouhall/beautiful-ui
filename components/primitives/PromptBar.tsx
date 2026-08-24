@@ -143,12 +143,17 @@ function parseToken(draft: string): { kind: "at" | "slash"; query: string; start
   };
 }
 
+export type PromptBarModel = { key: string; name: string; tag?: string };
+
 export default function PromptBar({
   variant = "Rounded",
   demo = true,
   tall = false,
   placeholder,
   onSend,
+  models,
+  modelKey,
+  onModel,
 }: {
   variant?: string;
   /** the self-running walkthrough; turn off when embedding in a real surface */
@@ -157,13 +162,17 @@ export default function PromptBar({
   tall?: boolean;
   placeholder?: string;
   onSend?: (text: string) => void;
+  models?: PromptBarModel[];
+  modelKey?: string;
+  onModel?: (key: string) => void;
 }) {
   const pill = variant === "Pill";
   const [draft, setDraft] = useState("");
   const [dismissed, setDismissed] = useState(false);
   const [plusOpen, setPlusOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
-  const [model, setModel] = useState(MODELS[1]);
+  const catalog = models && models.length > 0 ? models : MODELS;
+  const [model, setModel] = useState(catalog.find((m) => m.key === modelKey) ?? catalog[0] ?? MODELS[1]);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const [active, setActive] = useState(0);
@@ -221,7 +230,13 @@ export default function PromptBar({
 
   /* same gliding highlight in the model menu — floats to the hovered
    * row, falling back to the currently-selected model */
-  const modelIndex = MODELS.findIndex((m) => m.key === model.key);
+  useEffect(() => {
+    if (!modelKey) return;
+    const hit = catalog.find((m) => m.key === modelKey);
+    if (hit && hit.key !== model.key) setModel(hit);
+  }, [modelKey, catalog, model.key]);
+
+  const modelIndex = catalog.findIndex((m) => m.key === model.key);
   useLayoutEffect(() => {
     if (!modelOpen) return;
     const target = modelRowRefs.current[modelHovered ?? modelIndex];
@@ -301,9 +316,10 @@ export default function PromptBar({
     });
   };
 
-  const selectModel = (next: (typeof MODELS)[number]) => {
+  const selectModel = (next: PromptBarModel) => {
     setModel(next);
     setModelOpen(false);
+    onModel?.(next.key);
     if (next.key === "sprinkles-5") celebrate();
   };
 
@@ -316,7 +332,7 @@ export default function PromptBar({
     if (step.connect !== undefined) setConnected(step.connect);
     if (step.modelOpen !== undefined) setModelOpen(step.modelOpen);
     if (step.model) {
-      const next = MODELS.find((m) => m.key === step.model);
+      const next = catalog.find((m) => m.key === step.model);
       if (next) selectModel(next);
     }
     const t = setTimeout(() => setAutoStep((s) => s + 1), step.hold);
@@ -487,7 +503,7 @@ export default function PromptBar({
       {modelOpen && (
         <div
           onMouseLeave={() => setModelHovered(null)}
-          className="absolute z-10 w-44 rounded-[10px] bg-surface p-1 shadow-raised"
+          className="absolute z-10 min-w-52 max-w-72 rounded-[10px] bg-surface p-1 shadow-raised"
           style={{ left: modelMenuLeft, bottom: modelMenuBottom, animation: "pop-in 180ms cubic-bezier(0.23,1,0.32,1) both", transformOrigin: "bottom left" }}
         >
           {/* single gliding highlight — floats to the hovered / selected row */}
@@ -502,7 +518,7 @@ export default function PromptBar({
                 "top 220ms cubic-bezier(0.23,1,0.32,1), height 220ms cubic-bezier(0.23,1,0.32,1), opacity 150ms ease",
             }}
           />
-          {MODELS.map((m, i) => (
+          {catalog.map((m, i) => (
             <button
               key={m.key}
               type="button"

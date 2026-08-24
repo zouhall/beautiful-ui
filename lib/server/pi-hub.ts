@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { foldPiEvent, emptyPiView, type PiView, type PiWrapped } from "../pi-fold";
 import { withSecrets } from "./secrets";
+import { listPickerModels } from "./pi-models";
 
 const PI_BIN = process.env.PI_BIN || "/home/ubuntu/.local/bin/pi";
 const SESSION_DIR = process.env.PI_SESSION_DIR || path.join(process.cwd(), "sessions");
@@ -261,17 +262,8 @@ export function createPiHub() {
       sess.meta.thinking = level;
       return { level };
     },
-    async models() {
-      const first = [...live.values()].find((s) => s.alive);
-      if (!first) {
-        const snap = await this.create({ name: "models" });
-        const sess = live.get(snap.id);
-        if (!sess) return { models: [] };
-        const res = (await sess.send({ type: "get_available_models" })) as { data?: { models?: unknown[] } };
-        return { models: res.data?.models || [] };
-      }
-      const res = (await first.send({ type: "get_available_models" })) as { data?: { models?: unknown[] } };
-      return { models: res.data?.models || [] };
+    models() {
+      return { models: listPickerModels() };
     },
     async decide(id: string, aid: string, body: { confirmed?: boolean; value?: string; cancelled?: boolean }) {
       const sess = live.get(id);

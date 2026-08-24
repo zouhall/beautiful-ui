@@ -102,21 +102,16 @@ works in Vue, Svelte, or plain HTML on Tailwind v4.
 
 ## Wiring the harness to a real agent
 
-`components/site/IceCreamHarness.tsx` is a demo: a `SCENARIOS` map turns fake
-prompts into scripted replies built from the primitives. To make it real,
-replace the demo data with your backend — the primitives stay exactly as they
-are; they're just the rendering layer for your agent's output.
+`/harness` talks to a local Pi RPC host (`pi --mode rpc`). The PromptBar model
+picker is filled from `pi --list-models`. Gallery primitives on `/` still use
+the creamery demo data so the design system can be browsed without a live agent.
 
-| Demo seam | Replace with |
+| Seam | Live source |
 | --- | --- |
-| `SCENARIOS` / `matchScenario` in `IceCreamHarness.tsx` | your agent request per user message |
-| `StreamingText` / `StreamLine` | your token stream (SSE or the [AI SDK](https://ai-sdk.dev) `streamText`) |
-| `ThinkingState` | your agent's reasoning / step events |
-| `ToolChips` | your tool-call events and their results |
-| `ApprovalCard` | your human-in-the-loop confirmations |
-| `ContextCards` | your retrieval / memory chunks |
-| `RecordsTable` / `DiffTable` | your data and proposed edits |
-| model picker in `PromptBar` | your available models |
+| `IceCreamHarness.tsx` | `POST /api/pi/sessions` then `POST .../prompt` |
+| `PromptBar` model picker | `GET /api/pi/models` |
+| `StreamingText` / `ThinkingState` / `ToolChips` | Pi turn events via `PiTurn` |
+| `ApprovalCard` | Pi `extension_ui_request` |
 
 A typical production wiring:
 

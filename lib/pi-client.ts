@@ -43,7 +43,12 @@ export const piApi = {
       method: "POST",
       body: JSON.stringify({ id: aid, ...body }),
     }),
-  models: () => j<{ models: { id: string; name?: string; provider?: string }[] }>("/api/pi/models"),
+  setModel: (id: string, provider: string, model: string) =>
+    j<{ ok: boolean }>(`/api/pi/sessions/${encodeURIComponent(id)}/model`, {
+      method: "POST",
+      body: JSON.stringify({ provider, model }),
+    }),
+  models: () => j<{ models: { key: string; name: string; tag: string; provider: string; id: string }[] }>("/api/pi/models"),
 };
 
 export { emptyPiView };
