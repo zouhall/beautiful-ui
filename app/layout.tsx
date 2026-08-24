@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DialRoot } from "dialkit";
 import "dialkit/styles.css";
-import "./globals.css";
+import "@/packages/beautiful-ui/src/styles.css";
 import { DevToolbar } from "@/components/site/DevToolbar";
 import { InteractionSounds } from "@/components/site/InteractionSounds";
 import { ThemeSync } from "@/components/site/ThemeSync";

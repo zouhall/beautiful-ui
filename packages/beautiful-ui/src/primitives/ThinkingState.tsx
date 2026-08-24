@@ -110,7 +110,7 @@ export default function ThinkingState({
   const stage = useSequence(STAGES);
   const [manualExpanded, setManualExpanded] = useState<boolean | null>(null);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const liveRows = transcript
+  const liveRows: Row[] | undefined = transcript
     ? transcript.split(/\n+/).filter(Boolean).map((primary) => ({ primary }))
     : rows;
   const base = VARIANTS[variant] ?? VARIANTS.Steps;

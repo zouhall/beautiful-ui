@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, type ButtonVariant } from "@/components/atoms/Button";
+import { Button, type ButtonVariant } from "../atoms/Button";
 
 /* ─────────────────────────────────────────────────────────
  * RECOMMENDATION CARD

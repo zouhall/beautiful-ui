@@ -23,9 +23,9 @@ import ToolChips from "@/components/primitives/ToolChips";
 import SearchList from "@/components/primitives/SearchList";
 import SelectionActions from "@/components/primitives/SelectionActions";
 
-export type Entry = Meta & { Demo: ComponentType<{ variant?: string }> };
+export type Entry = Meta & { Demo: ComponentType<any> };
 
-const DEMOS: Record<string, ComponentType<{ variant?: string }>> = {
+const DEMOS: Record<string, ComponentType<any>> = {
   "loading-state": LoadingState,
   "thinking-state": ThinkingState,
   "streaming-text": StreamingText,

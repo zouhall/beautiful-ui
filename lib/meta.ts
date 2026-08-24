@@ -82,6 +82,7 @@ export const META: Meta[] = [
     title: "Records Table",
     caption: "CRM-style grid with tags, sorting, and relationship status.",
     file: "RecordsTable.tsx",
+    variants: ["Makers", "Clients"],
   },
   {
     id: "filter-table",

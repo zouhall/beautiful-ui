@@ -508,7 +508,8 @@ a:focus-visible .animated-underline::after {
   box-shadow: none;
 }
 
-.records-shell.is-fill .records-scroll {
+.records-shell.is-fill .records-scroll,
+.records-shell.is-clients .records-scroll {
   max-height: none;
   flex: 1;
 }

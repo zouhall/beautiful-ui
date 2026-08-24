@@ -19,8 +19,8 @@ import {
   TextBox,
   Xmark,
 } from "iconoir-react";
-import { Shimmer } from "@/components/atoms/Shimmer";
-import { StreamText } from "@/components/atoms/StreamText";
+import { Shimmer } from "../atoms/Shimmer";
+import { StreamText } from "../atoms/StreamText";
 
 /* ─────────────────────────────────────────────────────────
  * SELECTION ACTIONS

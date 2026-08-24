@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/atoms/Button";
+import { Button } from "../atoms/Button";
 
 /* ─────────────────────────────────────────────────────────
  * DIFF TABLE

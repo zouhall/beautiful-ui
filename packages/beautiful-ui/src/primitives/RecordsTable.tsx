@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import GlideMenu from "@/components/primitives/GlideMenu";
+import GlideMenu from "./GlideMenu";
 
 /* ─────────────────────────────────────────────────────────
  * RECORDS TABLE — an AI spreadsheet grid. Columns are
@@ -62,6 +62,17 @@ const TAG_COLORS: Record<string, TagColor> = {
   Sorbet: TAG_PALETTE.pink,
   Vegan: TAG_PALETTE.lime,
   Wholesale: TAG_PALETTE.amber,
+  /* HQ roster tags (client workflow demo) */
+  Client: TAG_PALETTE.cyan,
+  Partner: TAG_PALETTE.amber,
+  Delivery: TAG_PALETTE.green,
+  Ads: TAG_PALETTE.orange,
+  Content: TAG_PALETTE.purple,
+  Live: TAG_PALETTE.lime,
+  Blocked: TAG_PALETTE.red,
+  Paused: TAG_PALETTE.yellow,
+  Drift: TAG_PALETTE.magenta,
+  Finance: TAG_PALETTE.pink,
 };
 
 type Row = {
@@ -431,8 +442,16 @@ function InputPicker({
   );
 }
 
-export default function RecordsTable({ fill = false }: { fill?: boolean; variant?: string }) {
-  const rows = INITIAL_ROWS;
+export default function RecordsTable({
+  fill = false,
+  variant,
+  rows: rowsProp,
+}: {
+  fill?: boolean;
+  variant?: string;
+  rows?: Row[];
+}) {
+  const rows = rowsProp ?? INITIAL_ROWS;
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "name", dir: 1 });
   const [columnWidths, setColumnWidths] = useState(DEFAULT_COLUMN_WIDTHS);
@@ -616,7 +635,7 @@ export default function RecordsTable({ fill = false }: { fill?: boolean; variant
   const tableWidth = columnWidths.company + columnWidths.categories + columnWidths.last + columnWidths.strength + columnWidths.links + (aiAdded ? columnWidths.ai : 0) + actionColumnWidth;
 
   return (
-    <div className={`records-shell${fill ? " is-fill" : ""}`}>
+    <div className={`records-shell${fill ? " is-fill" : ""}${variant === "Clients" ? " is-clients" : ""}`}>
       <div
         className="records-scroll"
         tabIndex={0}

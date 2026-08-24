@@ -29,5 +29,9 @@ next-env.d.ts
 /.context
 /skills-lock.json
 
+# beautiful-ui package build artifacts + local deps
+/packages/*/node_modules/
+/packages/*/dist/
+
 # easter-egg video — kept on the deploy (via .vercelignore) but not published
 /public/subway-surfers.mp4

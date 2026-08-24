@@ -10,7 +10,7 @@ import { META } from "@/lib/meta";
 /* Sources are read at build time (static export) so every card
  * can offer its own copy-paste-able file. */
 function readSources(): Record<string, string> {
-  const dir = path.join(process.cwd(), "components", "primitives");
+  const dir = path.join(process.cwd(), "packages", "beautiful-ui", "src", "primitives");
   return Object.fromEntries(
     META.map((entry) => [
       entry.id,
@@ -36,6 +36,12 @@ export default function Home() {
                 className="-ml-3 size-20 shrink-0 lg:ml-0"
               />
               <ThemeToggle />
+              <Link
+                href="/playground"
+                className="ml-2 flex h-9 items-center rounded-full border border-line bg-surface px-3 text-[12px] font-medium text-ink-2 shadow-hairline transition-colors hover:border-accent hover:text-accent-ink"
+              >
+                Studio ↗
+              </Link>
             </div>
 
             <h1 className="mt-12 text-[21px] leading-snug font-semibold tracking-[-0.02em] text-ink text-balance lg:mt-[clamp(1.5rem,5vh,3rem)]">

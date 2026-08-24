@@ -1,0 +1,43 @@
+{
+  "name": "beautiful-ui",
+  "version": "0.1.0",
+  "description": "Crafted, copy-paste interface primitives for AI-native products — thinking and reasoning states, streaming answers, human-in-the-loop approvals, tool-call and task status, records and diff tables, prompt bars, and more.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "files": ["dist", "src"],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./src/styles.css"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "tailwindcss": "^4"
+  },
+  "dependencies": {
+    "@central-icons-react/round-outlined-radius-2-stroke-2": "^1.1.315",
+    "glimm": "^0.3.0",
+    "iconoir-react": "^7.11.1",
+    "liveline": "^0.0.7",
+    "posthog-js": "^1.417.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsup": "^8",
+    "typescript": "^5"
+  }
+}
