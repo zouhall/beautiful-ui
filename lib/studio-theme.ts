@@ -152,9 +152,11 @@ function block(t: StudioTheme, dark: boolean): string {
   return lines.join("\n");
 }
 
-/** Scoped override CSS for the studio wrapper — light and dark from one state. */
-export function buildThemeCSS(t: StudioTheme, scope = ".studio-theme"): string {
-  return `${scope} {\n${block(t, false)}\n}\n.dark ${scope} {\n${block(t, true)}\n}`;
+/** Scoped override CSS for the studio wrapper — light and dark from one state.
+ * `.bui-overlay` covers Base UI popups, which portal to document.body and
+ * would otherwise escape the themed wrapper. */
+export function buildThemeCSS(t: StudioTheme): string {
+  return `.studio-theme, .bui-overlay {\n${block(t, false)}\n}\n.dark .studio-theme, .dark .bui-overlay {\n${block(t, true)}\n}`;
 }
 
 /** The same theme as a paste-able replacement for the token blocks in styles.css. */

@@ -11,6 +11,9 @@ import type { ComponentType, ReactNode } from "react";
 /* atoms */
 import { Button } from "@/components/atoms/Button";
 import { Chip } from "@/components/atoms/Chip";
+import { Dialog, DialogTrigger, DialogContent, DialogClose, DialogTitle, DialogDescription } from "@/components/atoms/Dialog";
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "@/components/atoms/Menu";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/atoms/Popover";
 import { ProgressRing } from "@/components/atoms/ProgressRing";
 import { SegmentedControl } from "@/components/atoms/SegmentedControl";
 import { Shimmer } from "@/components/atoms/Shimmer";
@@ -18,6 +21,7 @@ import { StatusPill } from "@/components/atoms/StatusPill";
 import { StreamText } from "@/components/atoms/StreamText";
 import { Switch } from "@/components/atoms/Switch";
 import { TextRow } from "@/components/atoms/TextRow";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/atoms/Tooltip";
 
 /* primitives */
 import ApprovalCard from "@/components/primitives/ApprovalCard";
@@ -42,7 +46,7 @@ import TaskRows from "@/components/primitives/TaskRows";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips from "@/components/primitives/ToolChips";
 
-export type Category = "Agent" | "Data" | "Atoms";
+export type Category = "Agent" | "Data" | "Overlays" | "Atoms";
 
 export type Control =
   | {
@@ -82,7 +86,7 @@ const auto =
   (C: ComponentType<any>, extra?: (v: any) => Record<string, any>) =>
   (values: Record<string, any>) => <C {...values} {...(extra?.(values) ?? {})} />;
 
-export const CATEGORY_ORDER: Category[] = ["Agent", "Data", "Atoms"];
+export const CATEGORY_ORDER: Category[] = ["Agent", "Data", "Overlays", "Atoms"];
 
 export const PLAYGROUND: Playable[] = [
   /* ────────────────────────── AGENT ────────────────────────── */
@@ -312,6 +316,127 @@ export const PLAYGROUND: Playable[] = [
         ))}
       </GlideMenu>
     ),
+  },
+
+  /* ────────────────────────── OVERLAYS ─────────────────────── */
+  {
+    id: "popover",
+    category: "Overlays",
+    title: "Popover",
+    caption: "Anchored panel — focus-managed, Esc and outside-click dismiss.",
+    controls: [
+      {
+        type: "select",
+        key: "side",
+        label: "Side",
+        options: ["bottom", "top", "right", "left"].map((v) => ({ label: v, value: v })),
+      },
+      {
+        type: "select",
+        key: "align",
+        label: "Align",
+        options: ["center", "start", "end"].map((v) => ({ label: v, value: v })),
+      },
+    ],
+    defaults: { side: "bottom", align: "center" },
+    demo: (v) => (
+      <Popover>
+        <PopoverTrigger className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-2 shadow-hairline transition-colors hover:text-ink">
+          Open popover
+        </PopoverTrigger>
+        <PopoverContent side={v.side} align={v.align} className="w-64 p-3">
+          <p className="text-[12.5px] font-medium text-ink">Rename workspace</p>
+          <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-3">
+            Shown to teammates on their invite.
+          </p>
+          <input
+            defaultValue="Beautiful UI"
+            className="mt-2.5 w-full rounded-control border border-line bg-field px-2.5 py-1.5 text-[12.5px] text-ink outline-none transition-colors focus:border-accent"
+          />
+        </PopoverContent>
+      </Popover>
+    ),
+    note: "Click the button — then change side and align while it's open.",
+  },
+  {
+    id: "tooltip",
+    category: "Overlays",
+    title: "Tooltip",
+    caption: "Inverted hover hint on the shared chart-tooltip tokens.",
+    controls: [
+      {
+        type: "select",
+        key: "side",
+        label: "Side",
+        options: ["top", "bottom", "right", "left"].map((v) => ({ label: v, value: v })),
+      },
+    ],
+    defaults: { side: "top" },
+    demo: (v) => (
+      <TooltipProvider delay={200}>
+        <Tooltip>
+          <TooltipTrigger className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-2 shadow-hairline transition-colors hover:text-ink">
+            Hover me
+          </TooltipTrigger>
+          <TooltipContent side={v.side}>Deployed 2 minutes ago</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    note: "Hover the button — same skin as the chart tooltips.",
+  },
+  {
+    id: "menu",
+    category: "Overlays",
+    title: "Menu",
+    caption: "Dropdown with keyboard navigation and typeahead.",
+    demo: () => (
+      <Menu>
+        <MenuTrigger className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-2 shadow-hairline transition-colors hover:text-ink">
+          Actions
+        </MenuTrigger>
+        <MenuContent>
+          <MenuItem>Rename</MenuItem>
+          <MenuItem>Duplicate</MenuItem>
+          <MenuItem>Move to…</MenuItem>
+          <MenuSeparator />
+          <MenuItem destructive>Delete</MenuItem>
+        </MenuContent>
+      </Menu>
+    ),
+    note: "Click, then arrow-key through the items — typeahead works too.",
+  },
+  {
+    id: "dialog",
+    category: "Overlays",
+    title: "Dialog",
+    caption: "Modal with backdrop, scroll lock and focus trap.",
+    demo: () => (
+      <Dialog>
+        <DialogTrigger className="rounded-full bg-accent px-3.5 py-1.5 text-[12.5px] font-medium text-white shadow-btn transition-transform active:scale-[0.97]">
+          Delete project
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle className="text-[14px] font-semibold tracking-tight text-ink">
+            Delete project?
+          </DialogTitle>
+          <DialogDescription className="mt-1 text-[12.5px] leading-relaxed text-ink-3">
+            This removes the workspace and all its sessions. This can't be undone.
+          </DialogDescription>
+          <div className="mt-4 flex justify-end gap-2">
+            <DialogClose className="rounded-full px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-hover hover:text-ink">
+              Cancel
+            </DialogClose>
+            <DialogClose
+              className="rounded-full px-3 py-1.5 text-[12.5px] font-medium text-white transition-transform active:scale-[0.97]"
+              style={{ background: "var(--red)" }}
+            >
+              Delete
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+    ),
+    note: "Focus is trapped while open — Tab cycles the two actions, Esc closes.",
   },
 
   /* ────────────────────────── ATOMS ────────────────────────── */

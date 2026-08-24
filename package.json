@@ -11,6 +11,7 @@
     "test": "node --experimental-strip-types --test lib/*.test.ts"
   },
   "dependencies": {
+    "@base-ui/react": "^1.7.0",
     "@central-icons-react/round-outlined-radius-2-stroke-2": "^1.1.315",
     "cuelume": "^0.2.2",
     "dialkit": "^1.4.3",

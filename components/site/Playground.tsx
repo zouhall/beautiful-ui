@@ -455,7 +455,7 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
     sources[p.file ?? p.title.replace(" ", "")] ?? "";
 
   return (
-    <div className="studio-theme min-h-screen bg-canvas text-ink">
+    <div className="studio-theme isolate min-h-screen bg-canvas text-ink">
       <style>{themeCSS}</style>
       <style>{`
         .pg-range{-webkit-appearance:none;appearance:none;height:4px;border-radius:999px;

@@ -13,6 +13,9 @@
 /* atoms */
 export { Button, type ButtonVariant } from "./atoms/Button";
 export { Chip } from "./atoms/Chip";
+export { Dialog, DialogTrigger, DialogContent, DialogClose, DialogTitle, DialogDescription } from "./atoms/Dialog";
+export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "./atoms/Menu";
+export { Popover, PopoverTrigger, PopoverContent, PopoverClose } from "./atoms/Popover";
 export { ProgressRing } from "./atoms/ProgressRing";
 export { SegmentedControl } from "./atoms/SegmentedControl";
 export { Shimmer } from "./atoms/Shimmer";
@@ -20,6 +23,7 @@ export { StatusPill } from "./atoms/StatusPill";
 export { StreamText } from "./atoms/StreamText";
 export { Switch } from "./atoms/Switch";
 export { TextRow } from "./atoms/TextRow";
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./atoms/Tooltip";
 
 /* primitives */
 export { default as ApprovalCard } from "./primitives/ApprovalCard";

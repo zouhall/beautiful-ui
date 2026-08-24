@@ -4,8 +4,13 @@
   "description": "Crafted, copy-paste interface primitives for AI-native products — thinking and reasoning states, streaming answers, human-in-the-loop approvals, tool-call and task status, records and diff tables, prompt bars, and more.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["**/*.css"],
-  "files": ["dist", "src"],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -28,6 +33,7 @@
     "tailwindcss": "^4"
   },
   "dependencies": {
+    "@base-ui/react": "^1.7.0",
     "@central-icons-react/round-outlined-radius-2-stroke-2": "^1.1.315",
     "glimm": "^0.3.0",
     "iconoir-react": "^7.11.1",
