@@ -17,7 +17,7 @@ export function SettingsSection({
   className?: string;
 }) {
   return (
-    <section className={`overflow-hidden rounded-card border border-line bg-surface shadow-hairline ${className}`}>
+    <section className={`overflow-hidden rounded-card border border-line bg-surface shadow-card ${className}`}>
       <div className="border-b border-line px-4 py-3">
         <h2 className="text-[13px] font-semibold tracking-tight text-ink">{title}</h2>
         {description ? <p className="mt-0.5 text-[12px] text-ink-3">{description}</p> : null}

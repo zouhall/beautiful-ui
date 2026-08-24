@@ -43,7 +43,7 @@ export function ChartCard({
   const area = `${line} L${W},${H} L0,${H} Z`;
 
   return (
-    <div className={`rounded-card border border-line bg-surface p-4 shadow-hairline ${className}`}>
+    <div className={`rounded-card border border-line bg-surface p-4 shadow-card ${className}`}>
       <div className="flex items-center justify-between gap-3">
         <p className="text-[12.5px] font-medium text-ink-2">{title}</p>
         <SegmentedControl

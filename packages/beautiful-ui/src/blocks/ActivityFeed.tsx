@@ -21,7 +21,7 @@ export function ActivityFeed({
   className?: string;
 }) {
   return (
-    <div className={`overflow-hidden rounded-card border border-line bg-surface shadow-hairline ${className}`}>
+    <div className={`overflow-hidden rounded-card border border-line bg-surface shadow-card ${className}`}>
       <div className="border-b border-line px-4 py-3">
         <p className="text-[12.5px] font-medium text-ink-2">{title}</p>
       </div>

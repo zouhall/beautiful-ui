@@ -33,7 +33,7 @@ export function ProjectCard({
 }) {
   const s = STATUS[status];
   return (
-    <div className={`flex flex-col rounded-card border border-line bg-surface p-4 shadow-hairline transition-shadow hover:shadow-card ${className}`}>
+    <div className={`flex flex-col rounded-card border border-line bg-surface p-4 shadow-card transition-shadow hover:shadow-raised ${className}`}>
       <div className="flex items-center justify-between gap-3">
         <p className="truncate text-[13.5px] font-semibold tracking-tight text-ink">{name}</p>
         <StatusPill tone={s.tone}>{s.label}</StatusPill>

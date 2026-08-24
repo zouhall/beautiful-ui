@@ -23,12 +23,14 @@ export default function AppShell({
         </aside>
       ) : null}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-window border border-line bg-page">
-        {header ? (
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line px-5">
-            {header}
-          </header>
-        ) : null}
-        <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto">
+          {header ? (
+            <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-line bg-page/80 px-5 backdrop-blur-xl backdrop-saturate-150">
+              {header}
+            </header>
+          ) : null}
+          {children}
+        </main>
       </div>
     </div>
   );
