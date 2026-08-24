@@ -1,6 +1,9 @@
 # deps
 /node_modules
 
+# local Pi sessions for this harness
+/sessions
+
 # next
 /.next/
 /out/

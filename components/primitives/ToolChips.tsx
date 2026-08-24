@@ -82,7 +82,15 @@ const DIFF_LINES: Record<string, DiffLine[]> = {
   ],
 };
 
-export default function ToolChips() {
+export type LiveTool = {
+  id: string;
+  name: string;
+  args?: Record<string, unknown>;
+  result?: string;
+  status?: "running" | "done" | "error";
+};
+
+export default function ToolChips({ tools }: { tools?: LiveTool[] } = {}) {
   const [step, setStep] = useState(0);
   const [open, setOpen] = useState(true);
   const [openRows, setOpenRows] = useState<Set<string>>(new Set());
@@ -111,10 +119,11 @@ export default function ToolChips() {
   const total = ROWS.length + 1; // rows, then diff chips
 
   useEffect(() => {
+    if (tools) return;
     if (step >= total) return;
     const t = setTimeout(() => setStep((s) => s + 1), STEP_MS);
     return () => clearTimeout(t);
-  }, [step, total]);
+  }, [step, total, tools]);
 
   const toggleRow = (label: string) =>
     setOpenRows((current) => {
@@ -122,6 +131,71 @@ export default function ToolChips() {
       next.has(label) ? next.delete(label) : next.add(label);
       return next;
     });
+
+  if (tools) {
+    const iconFor = (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes("bash") || n.includes("run")) return "run";
+      if (n.includes("edit") || n.includes("write")) return "write";
+      if (n.includes("read")) return "read";
+      return "think";
+    };
+    return (
+      <div className="min-h-0 w-full max-w-80 pb-1">
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+          className="-mx-1.5 flex w-fit items-center gap-1.5 rounded-control px-1.5 py-1 text-[12.5px] text-ink-2 transition-colors duration-100 hover:bg-hover-2"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200" style={{ transform: open ? "rotate(0deg)" : "rotate(-90deg)" }}>
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+          <span className="tabular-nums">{tools.length} tool call{tools.length === 1 ? "" : "s"}</span>
+        </button>
+        <div className="grid transition-[grid-template-rows,opacity] duration-300" style={{ gridTemplateRows: open ? "1fr" : "0fr", opacity: open ? 1 : 0 }}>
+          <div className="-mx-1 overflow-hidden px-1.5 pb-1">
+            <div className="mt-1.5 flex flex-col gap-1">
+              {tools.map((tool) => {
+                const rowOpen = openRows.has(tool.id);
+                const chip = String(tool.args?.command || tool.args?.path || tool.name);
+                const icon = iconFor(tool.name);
+                return (
+                  <div key={tool.id} style={{ animation: "fade-up 300ms cubic-bezier(0.23,1,0.32,1) both" }}>
+                    <button
+                      type="button"
+                      aria-expanded={rowOpen}
+                      onClick={() => toggleRow(tool.id)}
+                      className="group/row -mx-[3px] flex h-7 w-[calc(100%+6px)] min-w-0 items-center gap-2 rounded-control px-[3px] text-left transition-colors duration-100 hover:bg-hover-2"
+                    >
+                      <span className="relative flex size-4 shrink-0 items-center justify-center text-ink-3">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill={icon === "think" ? "currentColor" : "none"} stroke="currentColor">
+                          {Icons[icon]}
+                        </svg>
+                      </span>
+                      <span className="shrink-0 text-[12.5px] font-medium text-ink">{tool.name}</span>
+                      <span className="inline-flex h-5.5 min-w-0 flex-1 items-center truncate rounded-chip bg-field px-1.5 font-mono text-[11.5px] text-ink-2 shadow-hairline">
+                        {chip}
+                      </span>
+                      {tool.status === "running" && <span className="size-2 shrink-0 rounded-full bg-orange" />}
+                      {tool.status === "error" && <span className="size-2 shrink-0 rounded-full bg-red" />}
+                    </button>
+                    <div className="grid transition-[grid-template-rows,opacity] duration-300" style={{ gridTemplateRows: rowOpen ? "1fr" : "0fr", opacity: rowOpen ? 1 : 0 }}>
+                      <div className="min-h-0 overflow-hidden">
+                        <pre className="mt-0.5 mb-1 ml-2 max-h-40 overflow-auto border-l border-line py-0.5 pl-3.5 font-mono text-[11.5px] leading-[1.6] text-ink-2 whitespace-pre-wrap">
+                          {tool.result || (tool.status === "running" ? "running…" : "")}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[220px] w-full max-w-80 pb-1">

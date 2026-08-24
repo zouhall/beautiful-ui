@@ -76,6 +76,8 @@ export default function StreamingText({
   loop = true,
   fill = false,
   onDone,
+  text,
+  streaming = false,
 }: {
   variant?: string;
   /** restart the stream after a hold; turn off when embedding in a real thread */
@@ -83,12 +85,17 @@ export default function StreamingText({
   /** fill the parent width instead of the gallery's fixed measure */
   fill?: boolean;
   onDone?: () => void;
+  /** live agent text — when set, the demo tokens are skipped */
+  text?: string;
+  streaming?: boolean;
 }) {
   const [count, setCount] = useState(0);
   const [sourcesOpen, setSourcesOpen] = useState(false);
-  const done = count >= TOKENS.length;
+  const live = text !== undefined;
+  const done = live ? !streaming : count >= TOKENS.length;
 
   useEffect(() => {
+    if (live) return;
     if (done && !loop) {
       onDone?.();
       return;
@@ -99,7 +106,23 @@ export default function StreamingText({
     );
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, done, loop]);
+  }, [count, done, loop, live]);
+
+  if (live) {
+    return (
+      <div className={fill ? "w-full" : "min-h-[15.5rem] w-full max-w-95"}>
+        <p className="text-[13px] leading-relaxed text-ink whitespace-pre-wrap">
+          {text}
+          {streaming && (
+            <span
+              className="ml-0.5 inline-block h-3 w-0.5 translate-y-0.5 rounded-full bg-ink"
+              style={{ animation: "fade-in 150ms ease-out both" }}
+            />
+          )}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className={fill ? "w-full" : "min-h-[15.5rem] w-full max-w-95"}>

@@ -1,12 +1,14 @@
 {
-  "name": "beautiful-ui",
+  "name": "beautiful-pi",
+  "private": true,
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0 -p 3692",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -H 0.0.0.0 -p 3692",
+    "lint": "next lint",
+    "test": "node --experimental-strip-types --test lib/*.test.ts"
   },
   "dependencies": {
     "@central-icons-react/round-outlined-radius-2-stroke-2": "^1.1.315",

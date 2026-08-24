@@ -119,10 +119,18 @@ function Ico({ path, size = 14, sw = 2 }: { path: React.ReactNode; size?: number
 export default function ApprovalCard({
   onSubmitted,
   resettable = true,
+  title,
+  message,
+  options,
+  onDecide,
 }: {
   onSubmitted?: () => void;
   resettable?: boolean;
   variant?: string;
+  title?: string;
+  message?: string;
+  options?: string[];
+  onDecide?: (ok: boolean, value?: string) => void;
 } = {}) {
   const [qi, setQi] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number[]>>({});
@@ -210,6 +218,71 @@ export default function ApprovalCard({
     setOpen(true);
     measured.current = false;
   };
+
+  if (title && onDecide) {
+    if (!open || sent) {
+      return (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-tint py-1 pr-2.5 pl-1 text-[12.5px] font-medium text-green">
+          <span className="flex size-4.5 items-center justify-center rounded-full bg-green text-white">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+          </span>
+          {sent ? "Answered" : title}
+        </span>
+      );
+    }
+    return (
+      <div className="w-full max-w-80">
+        <div className="relative overflow-hidden rounded-card bg-surface shadow-card" style={{ animation: "fade-up 380ms cubic-bezier(0.23,1,0.32,1) both" }}>
+          <div className="px-4 pt-4 pb-3">
+            <p className="text-[13.5px] font-medium text-ink">{title}</p>
+            {message ? <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2 whitespace-pre-wrap">{message}</p> : null}
+            {options && options.length > 0 ? (
+              <div className="mt-3 flex flex-col gap-1">
+                {options.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => {
+                      setSent(true);
+                      onDecide(true, option);
+                      onSubmitted?.();
+                    }}
+                    className="rounded-control px-2 py-1.5 text-left text-[13px] text-ink-2 transition-colors duration-100 hover:bg-hover hover:text-ink"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          <div className="primitive-card-footer flex items-center justify-end gap-1.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSent(true);
+                onDecide(false);
+                onSubmitted?.();
+              }}
+            >
+              Deny
+            </Button>
+            <Button
+              variant="accent"
+              size="sm"
+              onClick={() => {
+                setSent(true);
+                onDecide(true, options?.[0]);
+                onSubmitted?.();
+              }}
+            >
+              Allow
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!open) {
     return (

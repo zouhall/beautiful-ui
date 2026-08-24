@@ -90,15 +90,41 @@ function Dot({ tone }: { tone: string }) {
 
 const TONES = ["bg-accent", "bg-orange", "bg-green"];
 
-export default function ThinkingState({ variant = "Steps", onSettled }: { variant?: string; onSettled?: () => void }) {
+export default function ThinkingState({
+  variant = "Steps",
+  onSettled,
+  rows,
+  active,
+  done,
+  working: workingProp,
+  transcript,
+}: {
+  variant?: string;
+  onSettled?: () => void;
+  rows?: Row[];
+  active?: string;
+  done?: string;
+  working?: boolean;
+  transcript?: string;
+}) {
   const stage = useSequence(STAGES);
   const [manualExpanded, setManualExpanded] = useState<boolean | null>(null);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const v = VARIANTS[variant] ?? VARIANTS.Steps;
-  const autoExpanded = stage >= 1 && stage < 4;
+  const liveRows = transcript
+    ? transcript.split(/\n+/).filter(Boolean).map((primary) => ({ primary }))
+    : rows;
+  const base = VARIANTS[variant] ?? VARIANTS.Steps;
+  const v = {
+    ...base,
+    active: active ?? base.active,
+    done: done ?? base.done,
+    rows: liveRows ?? base.rows,
+  };
+  const live = workingProp !== undefined || liveRows !== undefined;
+  const autoExpanded = live ? Boolean(workingProp ?? true) : stage >= 1 && stage < 4;
   const expanded = manualExpanded ?? autoExpanded;
-  const working = stage < 3;
-  const visible = stage < 2 ? 0 : stage === 2 ? Math.min(2, v.rows.length) : v.rows.length;
+  const working = live ? Boolean(workingProp) : stage < 3;
+  const visible = live ? v.rows.length : stage < 2 ? 0 : stage === 2 ? Math.min(2, v.rows.length) : v.rows.length;
   const traceRef = useRef<HTMLDivElement>(null);
   const [lineHeight, setLineHeight] = useState(0);
   useLayoutEffect(() => {

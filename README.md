@@ -1,3 +1,22 @@
+# Beautiful UI · Pi harness
+
+Standalone Beautiful UI on this box, talking to `pi --mode rpc` directly.
+369 is not in this process.
+
+- App: `http://0.0.0.0:3692` and Tailscale `http://skhq.tailc215cd.ts.net:3692`
+- Harness: `/harness`
+- Gallery: `/`
+- Sessions: `./sessions`
+- Default model: `kimi-coding` / `k3`
+
+```bash
+cd ~/projects/beautiful-pi
+npm install
+npm run dev
+```
+
+---
+
 # Beautiful UI
 
 Crafted, copy-paste interface primitives for AI-native products — thinking and

@@ -18,6 +18,8 @@ import TaskRows from "@/components/primitives/TaskRows";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips from "@/components/primitives/ToolChips";
 import { UseThisModal } from "@/components/site/UseThisHarness";
+import PiThread from "@/components/site/PiTurn";
+import { piApi } from "@/lib/pi-client";
 
 /* ─────────────────────────────────────────────────────────
  * ICE CREAM HARNESS
@@ -485,7 +487,7 @@ function EmptyState({ onSend, shuffle, offset }: { onSend: (text: string, id: Sc
 /* ── main ─────────────────────────────────────────────────── */
 
 type Msg = { id: number; role: "user"; text: string } | { id: number; role: "assistant"; scenarioId: ScenarioId };
-type Chat = { id: number; title: string | null; messages: Msg[] };
+type Chat = { id: number; title: string | null; messages: Msg[]; sessionId?: string; pending?: string; err?: string };
 
 /* the pane arrives on the same beat as the answer it belongs to */
 /* The pane shell reserves its space as soon as the message is sent, so the
@@ -637,10 +639,11 @@ export default function IceCreamHarness() {
   const [useOpen, setUseOpen] = useState(false);
   const chatIdRef = useRef(1);
   const msgIdRef = useRef(0);
+  const sessionRef = useRef<Record<number, string>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const chat = chats.find((c) => c.id === activeId) ?? chats[0];
-  const active = chat.messages.length > 0;
+  const active = chat.messages.length > 0 || Boolean(chat.sessionId || chat.pending);
 
   /* right-hand pane: the latest assistant message that carries one */
   const [closedPaneId, setClosedPaneId] = useState(0);
@@ -672,45 +675,52 @@ export default function IceCreamHarness() {
     ],
   });
 
-  const send = (text: string, scenarioId: ScenarioId) => {
+  const send = (text: string, _scenarioId?: ScenarioId) => {
     posthog.capture("harness_prompt_sent");
-    setChats((current) => current.map((c) => (c.id === chat.id ? appendExchange(c, text, scenarioId) : c)));
+    const label = text.length > 30 ? `${text.slice(0, 30).trimEnd()}…` : text;
+    const chatId = chat.id;
+    setChats((current) =>
+      current.map((c) =>
+        c.id === chatId
+          ? {
+              ...c,
+              title: c.title ?? label,
+              pending: text,
+              err: undefined,
+              messages: [...c.messages, { id: (msgIdRef.current += 1), role: "user", text }],
+            }
+          : c,
+      ),
+    );
+    void (async () => {
+      try {
+        let sessionId = sessionRef.current[chatId] || chat.sessionId;
+        if (!sessionId) {
+          const created = await piApi.create({ name: label });
+          sessionId = created.session.id;
+          sessionRef.current[chatId] = sessionId;
+          setChats((current) =>
+            current.map((c) => (c.id === chatId ? { ...c, sessionId } : c)),
+          );
+        }
+        await piApi.prompt(sessionId, text);
+        setChats((current) =>
+          current.map((c) => (c.id === chatId ? { ...c, pending: undefined } : c)),
+        );
+      } catch (e) {
+        setChats((current) =>
+          current.map((c) => (c.id === chatId ? { ...c, err: (e as Error).message, pending: undefined } : c)),
+        );
+      }
+    })();
   };
 
   /* reopening an existing chat replays it; otherwise recents open in a
    * fresh chat unless the current one is empty */
   const [replay, setReplay] = useState<Record<number, number>>({});
-  const pickRecent = (scenarioId: ScenarioId, label: string, prompt = label) => {
+  const pickRecent = (_scenarioId: ScenarioId, label: string, prompt = label) => {
     posthog.capture("harness_recent_chat_opened");
-    const existing = chats.find((c) => c.title === label);
-    if (existing) {
-      if (prompt !== label) {
-        setChats((current) =>
-          current.map((c) =>
-            c.id === existing.id
-              ? {
-                  ...c,
-                  messages: c.messages.map((message) =>
-                    message.role === "user" && message.text === label ? { ...message, text: prompt } : message,
-                  ),
-                }
-              : c,
-          ),
-        );
-      }
-      setActiveId(existing.id);
-      setReplay((current) => ({ ...current, [existing.id]: (current[existing.id] ?? 0) + 1 }));
-      return;
-    }
-    if (chat.messages.length === 0) {
-      setChats((current) =>
-        current.map((c) => (c.id === chat.id ? appendExchange({ ...c, title: label }, prompt, scenarioId) : c)),
-      );
-      return;
-    }
-    const id = (chatIdRef.current += 1);
-    setChats((current) => [...current, appendExchange({ id, title: label, messages: [] }, prompt, scenarioId)]);
-    setActiveId(id);
+    send(prompt || label);
   };
 
   const newChat = () => {
@@ -780,29 +790,27 @@ export default function IceCreamHarness() {
    * docked assistant panel in spreadsheet mode (narrow) */
   const renderThread = (narrow: boolean) => (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <div className={`flex flex-col gap-8 py-8 ${narrow ? "px-4" : "px-4 sm:px-8 lg:px-12"}`}>
-          {chat.messages.map((message) => {
-            const full = !narrow && message.role === "assistant" && SCENARIOS[message.scenarioId].fullBleed;
-            return (
-              <div key={message.id} className={narrow || full ? "w-full" : "mx-auto w-full max-w-[720px]"}>
-                {message.role === "user" ? (
-                  <UserBubble text={message.text} />
-                ) : (
-                  <AssistantResponse key={`${message.id}-${replay[chat.id] ?? 0}`} scenarioId={message.scenarioId} />
-                )}
+      {chat.sessionId ? (
+        <PiThread sessionId={chat.sessionId} pendingUser={chat.pending} error={chat.err} />
+      ) : (
+        <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <div className={`flex flex-col gap-8 py-8 ${narrow ? "px-4" : "px-4 sm:px-8 lg:px-12"}`}>
+            {chat.messages.map((message) => (
+              <div key={message.id} className={narrow ? "w-full" : "mx-auto w-full max-w-[720px]"}>
+                {message.role === "user" ? <UserBubble text={message.text} /> : <LoadingState label="Starting Pi" variant="Dots" />}
               </div>
-            );
-          })}
+            ))}
+            {chat.err ? <p className="mx-auto max-w-[720px] text-[13px] text-red">{chat.err}</p> : null}
+          </div>
         </div>
-      </div>
+      )}
       <div className={`shrink-0 bg-page ${narrow ? "p-3" : "px-4 pt-3 pb-6 sm:px-8 lg:px-12"}`}>
         <div className={narrow ? "" : "mx-auto max-w-[720px]"}>
           <PromptBar
             demo={false}
             tall
             placeholder="Reply"
-            onSend={(text) => send(text, matchScenario(text))}
+            onSend={(text) => send(text)}
           />
         </div>
       </div>
