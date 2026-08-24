@@ -13,7 +13,7 @@ export function Kbd({
 }) {
   return (
     <kbd
-      className={`inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-line bg-inset px-1 font-mono text-[10.5px] font-medium text-ink-2 shadow-hairline ${className}`}
+      className={`inline-flex h-5 min-w-5 items-center justify-center rounded-chip border border-line bg-inset px-1 font-mono text-[10.5px] font-medium text-ink-2 shadow-hairline ${className}`}
     >
       {children}
     </kbd>

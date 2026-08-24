@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../atoms/Popover";
 import { Badge } from "../atoms/Badge";
+import { IconCheck, IconChevronLeft, IconChevronRight, IconPlus, IconX } from "../atoms/icons";
 
 /* ─────────────────────────────────────────────────────────
  * FilterToolbar — faceted filtering: one Filter button opens a
@@ -70,9 +71,7 @@ export function FilterToolbar({
         }}
       >
         <PopoverTrigger className="flex h-8 items-center gap-1.5 rounded-control border border-dashed border-line-strong px-2.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-line-strong hover:bg-hover hover:text-ink">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
-            <path d="M12 5v14M5 12h14" />
-          </svg>
+          <IconPlus />
           Filter
           {active.length > 0 && <Badge tone="accent">{active.length}</Badge>}
         </PopoverTrigger>
@@ -93,9 +92,7 @@ export function FilterToolbar({
                     <span>{f.label}</span>
                     <span className="flex items-center gap-1 text-ink-3">
                       {current && <span className="max-w-20 truncate text-[11.5px]">{current.value}</span>}
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
-                        <path d="m9 6 6 6-6 6" />
-                      </svg>
+                      <IconChevronRight size={11} />
                     </span>
                   </button>
                 );
@@ -107,9 +104,7 @@ export function FilterToolbar({
                 onClick={() => setFacetView(null)}
                 className="flex w-full items-center gap-1.5 rounded-chip px-2 py-1.5 text-left text-[11.5px] font-medium text-ink-3 transition-colors hover:bg-hover hover:text-ink"
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
-                  <path d="m15 6-6 6 6 6" />
-                </svg>
+                <IconChevronLeft size={11} />
                 {view.label}
               </button>
               <div className="my-1 h-px bg-line" />
@@ -124,11 +119,7 @@ export function FilterToolbar({
                     }`}
                   >
                     {opt}
-                    {selected && (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="text-accent-ink" aria-hidden>
-                        <path d="m4 12 5 5L20 6" />
-                      </svg>
-                    )}
+                    {selected && <IconCheck className="text-accent-ink" />}
                   </button>
                 );
               })}
@@ -149,9 +140,7 @@ export function FilterToolbar({
             aria-label={`Remove ${f.facetLabel} filter`}
             className="ml-0.5 flex size-4 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-hover-2 hover:text-ink"
           >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden>
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
+            <IconX size={9} />
           </button>
         </span>
       ))}

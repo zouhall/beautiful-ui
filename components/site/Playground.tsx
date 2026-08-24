@@ -12,6 +12,7 @@ import {
 } from "@/lib/studio-theme";
 import { SegmentedControl } from "@/components/atoms/SegmentedControl";
 import { Switch } from "@/components/atoms/Switch";
+import { Input } from "@/components/atoms/Input";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 /* ── props controls ───────────────────────────────────── */
@@ -75,11 +76,10 @@ function ControlRow({
       <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wide text-ink-3">
         {control.label}
       </span>
-      <input
+      <Input
         type="text"
         value={value}
         onChange={(e) => set(e.target.value)}
-        className="w-full rounded-control border border-line bg-field px-2.5 py-1.5 text-[12.5px] text-ink outline-none transition-colors focus:border-accent"
       />
     </label>
   );

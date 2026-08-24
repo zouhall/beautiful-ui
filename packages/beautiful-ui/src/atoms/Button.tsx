@@ -2,7 +2,7 @@
 
 import { ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "accent" | "success";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "accent" | "success" | "danger";
 type Size = "sm" | "md";
 
 const filledShadow = "shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]";
@@ -15,6 +15,7 @@ const variants: Record<ButtonVariant, string> = {
   ghost: "bg-hover-2 text-ink hover:bg-line-strong",
   accent: `bg-accent text-white hover:bg-accent-ink ${filledShadow}`,
   success: `bg-green text-white hover:brightness-95 ${filledShadow}`,
+  danger: `bg-red text-white hover:brightness-95 ${filledShadow}`,
 };
 
 /* Pill-shaped by default — the app's core button style. Explicit symmetric

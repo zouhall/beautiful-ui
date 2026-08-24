@@ -21,6 +21,16 @@ export { Delta } from "./atoms/Delta";
 export { Dialog, DialogTrigger, DialogContent, DialogClose, DialogTitle, DialogDescription } from "./atoms/Dialog";
 export { Drawer, DrawerTrigger, DrawerContent, DrawerClose, DrawerTitle, DrawerDescription } from "./atoms/Drawer";
 export { Input } from "./atoms/Input";
+export {
+  IconArrowDownRight,
+  IconArrowUpRight,
+  IconCheck,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlus,
+  IconX,
+} from "./atoms/icons";
 export { Kbd } from "./atoms/Kbd";
 export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "./atoms/Menu";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose } from "./atoms/Popover";

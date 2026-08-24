@@ -2,6 +2,7 @@
 
 import { Select as Base } from "@base-ui/react/select";
 import type { ReactNode } from "react";
+import { IconCheck, IconChevronDown } from "./icons";
 
 /* Select — Base UI listbox with the menu skin. */
 
@@ -19,9 +20,7 @@ export function SelectTrigger({
       className={`flex h-8 min-w-40 items-center justify-between gap-2 rounded-control border border-line bg-surface px-2.5 text-[12.5px] font-medium text-ink shadow-hairline outline-none transition-colors hover:border-line-strong data-[placeholder]:text-ink-3 ${className}`}
     >
       {children ?? <Base.Value />}
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" className="shrink-0 text-ink-3" aria-hidden>
-        <path d="m6 9 6 6 6-6" />
-      </svg>
+      <IconChevronDown className="shrink-0 text-ink-3" />
     </Base.Trigger>
   );
 }
@@ -63,9 +62,7 @@ export function SelectItem({
     >
       <Base.ItemText>{children}</Base.ItemText>
       <Base.ItemIndicator>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="text-accent-ink" aria-hidden>
-          <path d="m4 12 5 5L20 6" />
-        </svg>
+        <IconCheck className="text-accent-ink" />
       </Base.ItemIndicator>
     </Base.Item>
   );
