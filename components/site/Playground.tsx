@@ -12,6 +12,7 @@ import {
 } from "@/lib/studio-theme";
 import { SegmentedControl } from "@/components/atoms/SegmentedControl";
 import { Switch } from "@/components/atoms/Switch";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 /* ── props controls ───────────────────────────────────── */
 
@@ -488,6 +489,7 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
 
           <div className="ml-auto flex items-center gap-2">
             <span className="hidden font-mono text-[11px] text-ink-3 md:block">{playable.title}</span>
+            <ThemeToggle />
             <button
               onClick={() => setStudioOpen(true)}
               className="flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-[12px] font-medium text-white shadow-btn transition-transform active:scale-[0.97]"

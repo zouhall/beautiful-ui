@@ -10,6 +10,7 @@ import { FilterToolbar } from "@/components/blocks/FilterToolbar";
 import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { Avatar } from "@/components/atoms/Avatar";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Dashboard — Beautiful UI template",
@@ -28,6 +29,7 @@ export default function DashboardPage() {
         <>
           <Input placeholder="Search…" className="max-w-56" />
           <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <Avatar fallback="SK" size={26} />
           </div>
         </>
