@@ -274,9 +274,15 @@ export default function IceCreamHarness() {
       setActiveId(existing.id);
       return;
     }
-    const id = (chatIdRef.current += 1);
+    const empty = chats.find((item) => !item.sessionId && item.messages.length === 0);
+    const id = empty?.id ?? (chatIdRef.current += 1);
     sessionRef.current[id] = sessionId;
-    setChats((current) => [...current, { id, title: label, messages: [], sessionId }]);
+    setChats((current) => {
+      if (empty) {
+        return current.map((item) => (item.id === id ? { ...item, title: label, sessionId } : item));
+      }
+      return [...current, { id, title: label, messages: [], sessionId }];
+    });
     setActiveId(id);
     void piApi
       .poll(sessionId, 0)

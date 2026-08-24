@@ -503,7 +503,7 @@ export default function PromptBar({
       {modelOpen && (
         <div
           onMouseLeave={() => setModelHovered(null)}
-          className="absolute z-10 min-w-52 max-w-72 rounded-[10px] bg-surface p-1 shadow-raised"
+          className="absolute z-10 max-h-72 min-w-52 max-w-72 overflow-y-auto rounded-[10px] bg-surface p-1 shadow-raised"
           style={{ left: modelMenuLeft, bottom: modelMenuBottom, animation: "pop-in 180ms cubic-bezier(0.23,1,0.32,1) both", transformOrigin: "bottom left" }}
         >
           {/* single gliding highlight — floats to the hovered / selected row */}
