@@ -9,17 +9,29 @@ import type { ComponentType, ReactNode } from "react";
  * ───────────────────────────────────────────────────────── */
 
 /* atoms */
+import { Accordion, AccordionItem } from "@/components/atoms/Accordion";
+import { Avatar } from "@/components/atoms/Avatar";
+import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
+import { Checkbox } from "@/components/atoms/Checkbox";
 import { Chip } from "@/components/atoms/Chip";
 import { Dialog, DialogTrigger, DialogContent, DialogClose, DialogTitle, DialogDescription } from "@/components/atoms/Dialog";
+import { Drawer, DrawerTrigger, DrawerContent, DrawerClose, DrawerTitle, DrawerDescription } from "@/components/atoms/Drawer";
+import { Input } from "@/components/atoms/Input";
+import { Kbd } from "@/components/atoms/Kbd";
 import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "@/components/atoms/Menu";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/atoms/Popover";
 import { ProgressRing } from "@/components/atoms/ProgressRing";
+import { RadioGroup, RadioItem } from "@/components/atoms/RadioGroup";
 import { SegmentedControl } from "@/components/atoms/SegmentedControl";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/atoms/Select";
+import { Separator } from "@/components/atoms/Separator";
 import { Shimmer } from "@/components/atoms/Shimmer";
+import { Slider } from "@/components/atoms/Slider";
 import { StatusPill } from "@/components/atoms/StatusPill";
 import { StreamText } from "@/components/atoms/StreamText";
 import { Switch } from "@/components/atoms/Switch";
+import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/atoms/Tabs";
 import { TextRow } from "@/components/atoms/TextRow";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/atoms/Tooltip";
 
@@ -438,6 +450,31 @@ export const PLAYGROUND: Playable[] = [
     ),
     note: "Focus is trapped while open — Tab cycles the two actions, Esc closes.",
   },
+  {
+    id: "drawer",
+    category: "Overlays",
+    title: "Drawer",
+    caption: "Bottom sheet with swipe-to-dismiss.",
+    demo: () => (
+      <Drawer>
+        <DrawerTrigger className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-2 shadow-hairline transition-colors hover:text-ink">
+          Open sheet
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerTitle className="text-[14px] font-semibold tracking-tight text-ink">
+            Session settings
+          </DrawerTitle>
+          <DrawerDescription className="mt-1 text-[12.5px] leading-relaxed text-ink-3">
+            Sheets suit mobile flows and quick adjustments. Drag down to dismiss.
+          </DrawerDescription>
+          <div className="mt-4">
+            <Input placeholder="Session name" defaultValue="Untitled session" />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    ),
+    note: "Opens from the bottom edge — drag it down.",
+  },
 
   /* ────────────────────────── ATOMS ────────────────────────── */
   {
@@ -604,6 +641,185 @@ export const PLAYGROUND: Playable[] = [
         <TextRow label="Model" value="gpt-5.6-sol" />
         <TextRow label="Temperature" value="0.7" />
         <TextRow label="Status" value={<StatusPill tone="green">Ready</StatusPill>} />
+      </div>
+    ),
+  },
+  {
+    id: "input",
+    category: "Atoms",
+    title: "Input",
+    caption: "Text field on the field token.",
+    controls: [{ type: "text", key: "placeholder", label: "Placeholder" }],
+    defaults: { placeholder: "Search sessions…" },
+    demo: (v) => (
+      <div className="w-full max-w-64">
+        <Input placeholder={v.placeholder} />
+      </div>
+    ),
+  },
+  {
+    id: "select",
+    category: "Atoms",
+    title: "Select",
+    caption: "Listbox on the menu skin, with check indicator.",
+    demo: () => (
+      <Select defaultValue="sol">
+        <SelectTrigger />
+        <SelectContent>
+          <SelectItem value="sol">gpt-5.6-sol</SelectItem>
+          <SelectItem value="fable">Fable 5</SelectItem>
+          <SelectItem value="sonnet">Sonnet 5</SelectItem>
+          <SelectItem value="composer">Composer 2.5</SelectItem>
+        </SelectContent>
+      </Select>
+    ),
+    note: "Base UI listbox — type a letter to jump.",
+  },
+  {
+    id: "tabs",
+    category: "Atoms",
+    title: "Tabs",
+    caption: "Underline tabs that switch panels.",
+    demo: () => (
+      <div className="w-full max-w-80">
+        <Tabs defaultValue="general">
+          <TabsList>
+            <TabsTab value="general">General</TabsTab>
+            <TabsTab value="models">Models</TabsTab>
+            <TabsTab value="usage">Usage</TabsTab>
+          </TabsList>
+          <TabsPanel value="general">Workspace name, slug and members.</TabsPanel>
+          <TabsPanel value="models">Default model and fallbacks per surface.</TabsPanel>
+          <TabsPanel value="usage">Tokens, spend and rate limits.</TabsPanel>
+        </Tabs>
+      </div>
+    ),
+    note: "Click the tabs — the underline is the accent token.",
+  },
+  {
+    id: "checkbox",
+    category: "Atoms",
+    title: "Checkbox",
+    caption: "Hairline box with accent fill.",
+    controls: [{ type: "switch", key: "checked", label: "Checked" }],
+    defaults: { checked: true },
+    demo: (v, set) => (
+      <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-ink-2">
+        <Checkbox checked={v.checked} onCheckedChange={(c) => set("checked", c)} label="Remember" />
+        Remember this device
+      </label>
+    ),
+  },
+  {
+    id: "radio-group",
+    category: "Atoms",
+    title: "Radio Group",
+    caption: "Accent dot on a hairline ring.",
+    demo: () => (
+      <RadioGroup defaultValue="balanced">
+        <RadioItem value="fast" label="Fastest" />
+        <RadioItem value="balanced" label="Balanced" />
+        <RadioItem value="careful" label="Most careful" />
+      </RadioGroup>
+    ),
+    note: "Arrow keys move between options.",
+  },
+  {
+    id: "slider",
+    category: "Atoms",
+    title: "Slider",
+    caption: "Draggable value track — the pg-range look, accessible.",
+    demo: () => (
+      <div className="w-full max-w-64">
+        <Slider defaultValue={40} label="Temperature" />
+      </div>
+    ),
+    note: "Drag the thumb, or focus it and use arrow keys.",
+  },
+  {
+    id: "accordion",
+    category: "Atoms",
+    title: "Accordion",
+    caption: "Ruled rows with a rotating chevron.",
+    demo: () => (
+      <div className="w-full max-w-80">
+        <Accordion>
+          <AccordionItem value="a" title="What does the agent remember?">
+            Only what you pin. Sessions are local by default.
+          </AccordionItem>
+          <AccordionItem value="b" title="Can it run tools?">
+            Yes — tool calls appear as chips, and approvals gate anything destructive.
+          </AccordionItem>
+          <AccordionItem value="c" title="Where is my data stored?">
+            In your workspace. Nothing leaves the box without an explicit integration.
+          </AccordionItem>
+        </Accordion>
+      </div>
+    ),
+    note: "Click a row to expand it.",
+  },
+  {
+    id: "avatar",
+    category: "Atoms",
+    title: "Avatar",
+    caption: "Image with initials fallback.",
+    controls: [{ type: "slider", key: "size", label: "Size", min: 20, max: 64, step: 1, suffix: "px" }],
+    defaults: { size: 28 },
+    demo: (v) => (
+      <div className="flex items-center gap-2.5">
+        <Avatar fallback="SK" size={v.size} />
+        <Avatar fallback="TR" size={v.size} />
+        <Avatar fallback="AI" size={v.size} />
+      </div>
+    ),
+  },
+  {
+    id: "badge",
+    category: "Atoms",
+    title: "Badge",
+    caption: "Small count/tag pill — the sidebar counter.",
+    controls: [
+      {
+        type: "select",
+        key: "tone",
+        label: "Tone",
+        options: ["neutral", "accent", "green", "orange", "red"].map((v) => ({ label: v, value: v })),
+      },
+    ],
+    defaults: { tone: "accent" },
+    demo: (v) => (
+      <div className="flex items-center gap-2">
+        <Badge tone={v.tone}>12</Badge>
+        <Badge tone={v.tone}>new</Badge>
+        <Badge tone="neutral">v2</Badge>
+      </div>
+    ),
+  },
+  {
+    id: "kbd",
+    category: "Atoms",
+    title: "Kbd",
+    caption: "Keyboard key cap.",
+    demo: () => (
+      <div className="flex items-center gap-2 text-[12.5px] text-ink-3">
+        <Kbd>⌘</Kbd>
+        <Kbd>K</Kbd>
+        <span>to search</span>
+        <Kbd>Esc</Kbd>
+        <span>to close</span>
+      </div>
+    ),
+  },
+  {
+    id: "separator",
+    category: "Atoms",
+    title: "Separator",
+    caption: "Hairline rule between sections.",
+    demo: () => (
+      <div className="w-full max-w-64">
+        <p className="text-[12.5px] text-ink-2">Above the rule</p>
+        <Separator className="my-3" />
+        <p className="text-[12.5px] text-ink-3">Below the rule</p>
       </div>
     ),
   },

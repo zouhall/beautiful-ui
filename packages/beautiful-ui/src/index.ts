@@ -11,17 +11,29 @@
  */
 
 /* atoms */
+export { Accordion, AccordionItem } from "./atoms/Accordion";
+export { Avatar } from "./atoms/Avatar";
+export { Badge, type BadgeTone } from "./atoms/Badge";
 export { Button, type ButtonVariant } from "./atoms/Button";
+export { Checkbox } from "./atoms/Checkbox";
 export { Chip } from "./atoms/Chip";
 export { Dialog, DialogTrigger, DialogContent, DialogClose, DialogTitle, DialogDescription } from "./atoms/Dialog";
+export { Drawer, DrawerTrigger, DrawerContent, DrawerClose, DrawerTitle, DrawerDescription } from "./atoms/Drawer";
+export { Input } from "./atoms/Input";
+export { Kbd } from "./atoms/Kbd";
 export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "./atoms/Menu";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose } from "./atoms/Popover";
 export { ProgressRing } from "./atoms/ProgressRing";
+export { RadioGroup, RadioItem } from "./atoms/RadioGroup";
 export { SegmentedControl } from "./atoms/SegmentedControl";
+export { Select, SelectTrigger, SelectContent, SelectItem } from "./atoms/Select";
+export { Separator } from "./atoms/Separator";
 export { Shimmer } from "./atoms/Shimmer";
+export { Slider } from "./atoms/Slider";
 export { StatusPill } from "./atoms/StatusPill";
 export { StreamText } from "./atoms/StreamText";
 export { Switch } from "./atoms/Switch";
+export { Tabs, TabsList, TabsTab, TabsPanel } from "./atoms/Tabs";
 export { TextRow } from "./atoms/TextRow";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./atoms/Tooltip";
 
