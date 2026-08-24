@@ -22,10 +22,10 @@
   --hover: oklch(0.97 0.002 247.839);
   --hover-2: oklch(0.933 0.003 247.86);
 
-  /* ink ramp */
+  /* ink ramp — ink-3 sits at the WCAG AA floor for caption text */
   --ink: oklch(0.247 0.006 258.361);
-  --ink-2: oklch(0.506 0.01 264.477);
-  --ink-3: oklch(0.695 0.009 264.505);
+  --ink-2: oklch(0.46 0.01 264.477);
+  --ink-3: oklch(0.54 0.01 264.505);
 
   /* borders — solid and crisp, not alpha */
   --line: oklch(0.946 0.003 264.542);
@@ -74,7 +74,7 @@
 
   --ink: oklch(0.964 0.002 247.839);
   --ink-2: oklch(0.731 0.008 260.731);
-  --ink-3: oklch(0.541 0.01 264.484);
+  --ink-3: oklch(0.64 0.009 264.484);
 
   --line: oklch(0.308 0.006 258.354);
   --line-strong: oklch(0.356 0.007 264.474);

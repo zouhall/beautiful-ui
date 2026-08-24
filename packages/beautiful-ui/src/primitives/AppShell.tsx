@@ -17,7 +17,7 @@ export default function AppShell({
   return (
     <div className={`flex h-dvh bg-canvas text-ink ${className}`}>
       {sidebar ? (
-        <aside className="w-60 shrink-0 overflow-y-auto border-r border-line bg-surface">
+        <aside className="hidden w-60 shrink-0 overflow-y-auto border-r border-line bg-surface lg:block">
           {sidebar}
         </aside>
       ) : null}
