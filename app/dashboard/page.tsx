@@ -4,6 +4,7 @@ import PageHeader from "@/components/primitives/PageHeader";
 import SidebarNav from "@/components/primitives/SidebarNav";
 import RecordsTable from "@/components/primitives/RecordsTable";
 import { StatsRow } from "@/components/blocks/StatsRow";
+import { InsightChartCard } from "@/components/blocks/InsightChartCard";
 import { ChartCard } from "@/components/blocks/ChartCard";
 import { ActivityFeed } from "@/components/blocks/ActivityFeed";
 import { FilterToolbar } from "@/components/blocks/FilterToolbar";
@@ -46,7 +47,7 @@ const SESSIONS_BARS = [
 export default function DashboardPage() {
   return (
     <AppShell
-      sidebar={<SidebarNav />}
+      sidebar={<SidebarNav fill />}
       header={
         <>
           <Input placeholder="Search…" aria-label="Search" className="max-w-56" />
@@ -82,13 +83,23 @@ export default function DashboardPage() {
 
         {/* Charts & Activity Grid */}
         <div className="grid gap-4 lg:grid-cols-3">
-          <ChartCard
-            title="Revenue Trajectory"
-            value="$28,712"
-            delta={14.8}
-            variant="area"
-            series="ink"
-            data={REVENUE_SERIES}
+          <InsightChartCard
+            title="Revenue vs Ad Spend Trajectory"
+            badgeLabel="Liveline Live"
+            seriesList={[
+              {
+                id: "rev",
+                name: "Revenue",
+                color: "#3d9aff",
+                data: [14200, 16800, 15400, 19200, 18500, 24100, 22800, 28712],
+              },
+              {
+                id: "spend",
+                name: "Ad Spend",
+                color: "#f68f3c",
+                data: [4200, 5100, 4800, 6900, 6200, 8400, 7800, 9650],
+              },
+            ]}
             periods={["6M", "YTD", "1Y"]}
             className="lg:col-span-2"
           />

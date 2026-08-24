@@ -41,6 +41,7 @@ import { AuthCard } from "@/components/blocks/AuthCard";
 import { ChartCard } from "@/components/blocks/ChartCard";
 import { EmptyState } from "@/components/blocks/EmptyState";
 import { FilterToolbar } from "@/components/blocks/FilterToolbar";
+import { InsightChartCard } from "@/components/blocks/InsightChartCard";
 import { MemberList } from "@/components/blocks/MemberList";
 import { ProjectCard } from "@/components/blocks/ProjectCard";
 import { SettingsSection, SettingsRow } from "@/components/blocks/SettingsSection";
@@ -861,6 +862,24 @@ export const PLAYGROUND: Playable[] = [
       </div>
     ),
     note: "Bars are divs on the accent token — the theme studio re-skins the chart.",
+  },
+  {
+    id: "insight-chart-card",
+    category: "Blocks",
+    title: "Insight Chart Card",
+    caption: "Liveline Catmull-Rom dual-series analytics with hover pill cursor.",
+    demo: () => (
+      <div className="w-full max-w-xl">
+        <InsightChartCard
+          title="Revenue vs Ad Spend"
+          seriesList={[
+            { id: "rev", name: "Revenue", color: "var(--accent)", data: [14, 18, 16, 21, 24, 28] },
+            { id: "spend", name: "Ad Spend", color: "var(--orange)", data: [4, 6, 5, 8, 7, 9.6] },
+          ]}
+        />
+      </div>
+    ),
+    note: "Interactive — scrub along the curve to see the floating pill tooltip.",
   },
   {
     id: "stats-row",

@@ -86,6 +86,7 @@ export { AuthCard } from "./blocks/AuthCard";
 export { ChartCard } from "./blocks/ChartCard";
 export { EmptyState } from "./blocks/EmptyState";
 export { FilterToolbar, type Facet, type ActiveFilter } from "./blocks/FilterToolbar";
+export { InsightChartCard, type SeriesDef } from "./blocks/InsightChartCard";
 export { MemberList, type Member } from "./blocks/MemberList";
 export { ProjectCard, type ProjectStatus } from "./blocks/ProjectCard";
 export { SettingsSection, SettingsRow } from "./blocks/SettingsSection";
