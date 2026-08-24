@@ -188,12 +188,13 @@ export function foldPiEvent(view: PiView, wrapped: PiWrapped): PiView {
     const { messages, i } = withAssistant(view);
     const text = textOf(e.message);
     const thinking = thinkingOf(e.message);
+    const err = (e.message as { errorMessage?: string }).errorMessage;
     messages[i] = {
       ...messages[i],
       text: text || messages[i].text,
       thinking: thinking || messages[i].thinking,
     };
-    return done({ ...view, messages });
+    return done({ ...view, messages, error: err ? String(err) : view.error, streaming: err ? false : view.streaming });
   }
 
   if (e.type === "tool_execution_start") {

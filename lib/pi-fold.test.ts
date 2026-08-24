@@ -116,3 +116,15 @@ test("error event records message and stops stream", () => {
   assert.equal(v.error, "boom");
   assert.equal(v.streaming, false);
 });
+
+test("assistant errorMessage becomes view.error", () => {
+  const v = foldPiEvent(emptyPiView(), {
+    seq: 1,
+    event: {
+      type: "message_end",
+      message: { role: "assistant", content: [], errorMessage: "403 quota", stopReason: "error" },
+    },
+  });
+  assert.equal(v.error, "403 quota");
+  assert.equal(v.streaming, false);
+});

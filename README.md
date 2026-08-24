@@ -7,7 +7,7 @@ Standalone Beautiful UI on this box, talking to `pi --mode rpc` directly.
 - Harness: `/harness`
 - Gallery: `/`
 - Sessions: `./sessions`
-- Default model: `kimi-coding` / `k3`
+- Default model: `openai-codex` / `gpt-5.6-sol`
 
 ```bash
 cd ~/projects/beautiful-pi

@@ -8,8 +8,8 @@ import { withSecrets } from "./secrets";
 const PI_BIN = process.env.PI_BIN || "/home/ubuntu/.local/bin/pi";
 const SESSION_DIR = process.env.PI_SESSION_DIR || path.join(process.cwd(), "sessions");
 const HOME = process.env.HOME || "/home/ubuntu";
-const DEFAULT_PROVIDER = process.env.PI_PROVIDER || "kimi-coding";
-const DEFAULT_MODEL = process.env.PI_MODEL || "k3";
+const DEFAULT_PROVIDER = process.env.PI_PROVIDER || "openai-codex";
+const DEFAULT_MODEL = process.env.PI_MODEL || "gpt-5.6-sol";
 const DEFAULT_THINKING = process.env.PI_THINKING || "high";
 const MAX_EVENTS = 8000;
 
@@ -180,6 +180,7 @@ export function createPiHub() {
     const args = [
       "--mode", "rpc",
       "--approve",
+      "--no-extensions",
       "--provider", opts.provider || DEFAULT_PROVIDER,
       "--model", opts.model || DEFAULT_MODEL,
       "--thinking", opts.thinking || DEFAULT_THINKING,
