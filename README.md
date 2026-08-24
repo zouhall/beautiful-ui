@@ -82,9 +82,13 @@ A live, hero-ui-style catalog:
 - **Props** — each playable ships a control schema (`lib/playground.tsx`); the
   right-hand panel renders segmented controls, switches, sliders and text
   inputs that re-render the live component, plus a **View code** source overlay.
-- **Theme studio** — pick accent + semantic colors and a radius; the tokens
-  are rewritten as CSS variables on the wrapper, so every component re-skins in
-  place. Presets for Indigo / Blue / Violet / Emerald / Teal / Rose / Amber / Slate.
+- **Theme studio** — a monochrome-first theme engine (`lib/studio-theme.ts`):
+  neutral **hue + tint** sliders regenerate the whole gray ramp (light *and*
+  dark) since every neutral is an oklch triplet with fixed lightness steps;
+  plus accent + semantic colors, radius, border strength and flat/default
+  shadows. Presets (Slate / Graphite / Warm / Forest / Rose / Ocean) are full
+  themes, and **Copy tokens** exports the generated `:root` / `.dark` block to
+  paste into `styles.css`.
 
 ## The design system
 

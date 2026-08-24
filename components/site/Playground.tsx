@@ -1,63 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { CATEGORY_ORDER, PLAYGROUND, type Playable } from "@/lib/playground";
+import {
+  DEFAULT_STUDIO_THEME,
+  STUDIO_PRESETS,
+  buildThemeCSS,
+  buildTokensExport,
+  type StudioTheme,
+} from "@/lib/studio-theme";
 import { SegmentedControl } from "@/components/atoms/SegmentedControl";
 import { Switch } from "@/components/atoms/Switch";
-
-/* ─────────────────────────────────────────────────────────
- * THEME STUDIO
- * Live-rewrites the design tokens on the wrapper so every
- * component underneath re-themes in place.
- * ───────────────────────────────────────────────────────── */
-
-type ThemeState = {
-  accent: string;
-  green: string;
-  orange: string;
-  red: string;
-  radius: number;
-};
-
-const DEFAULT_THEME: ThemeState = {
-  accent: "#3b82f6",
-  green: "#10b981",
-  orange: "#f59e0b",
-  red: "#ef4444",
-  radius: 6,
-};
-
-const PRESETS: { name: string; accent: string }[] = [
-  { name: "Indigo", accent: "#6366f1" },
-  { name: "Blue", accent: "#3b82f6" },
-  { name: "Violet", accent: "#8b5cf6" },
-  { name: "Emerald", accent: "#059669" },
-  { name: "Teal", accent: "#0d9488" },
-  { name: "Rose", accent: "#e11d48" },
-  { name: "Amber", accent: "#d97706" },
-  { name: "Slate", accent: "#64748b" },
-];
-
-const mix = (c: string, pct: string, to: string) => `color-mix(in oklch, ${c} ${pct}, ${to})`;
-
-function themeVars(t: ThemeState): CSSProperties {
-  return {
-    "--accent": t.accent,
-    "--accent-ink": mix(t.accent, "72%", "var(--ink)"),
-    "--accent-tint": mix(t.accent, "12%", "transparent"),
-    "--green": t.green,
-    "--green-tint": mix(t.green, "14%", "transparent"),
-    "--orange": t.orange,
-    "--orange-tint": mix(t.orange, "14%", "transparent"),
-    "--red": t.red,
-    "--red-tint": mix(t.red, "14%", "transparent"),
-    "--radius-chip": `${t.radius}px`,
-    "--radius-control": `${Math.round(t.radius * 1.35)}px`,
-    "--radius-card": `${Math.round(t.radius * 1.75)}px`,
-    "--radius-window": `${Math.round(t.radius * 2.4)}px`,
-  } as CSSProperties;
-}
 
 /* ── props controls ───────────────────────────────────── */
 
@@ -214,6 +168,45 @@ function CodeView({ source, onClose }: { source: string; onClose: () => void }) 
 
 /* ── studio drawer ────────────────────────────────────── */
 
+function SliderRow({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  display,
+  onChange,
+  track,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  display: string;
+  onChange: (v: number) => void;
+  track?: string;
+}) {
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="text-[12.5px] text-ink-2">{label}</span>
+        <span className="font-mono text-[11px] tabular-nums text-ink-3">{display}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="pg-range w-full"
+        style={track ? { background: track } : undefined}
+      />
+    </div>
+  );
+}
+
 function Studio({
   open,
   theme,
@@ -221,10 +214,11 @@ function Studio({
   onClose,
 }: {
   open: boolean;
-  theme: ThemeState;
-  setTheme: (t: ThemeState) => void;
+  theme: StudioTheme;
+  setTheme: (t: StudioTheme) => void;
   onClose: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -234,6 +228,17 @@ function Studio({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
   if (!open) return null;
+
+  const set = (patch: Partial<StudioTheme>) => setTheme({ ...theme, ...patch });
+
+  const copyTokens = async () => {
+    try {
+      await navigator.clipboard.writeText(buildTokensExport(theme));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {}
+  };
+
   const ColorField = ({
     label,
     value,
@@ -259,6 +264,10 @@ function Studio({
       <span className="font-mono text-[11px] uppercase text-ink-3">{value}</span>
     </label>
   );
+
+  const hueTrack = `linear-gradient(90deg in oklch longer hue, oklch(0.7 0.04 0), oklch(0.7 0.04 359))`;
+  const tintTrack = `linear-gradient(90deg, oklch(0.7 0 ${theme.hue}), oklch(0.7 0.06 ${theme.hue}))`;
+
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={onClose} />
@@ -277,64 +286,114 @@ function Studio({
         </div>
 
         <div className="flex-1 space-y-6 overflow-y-auto p-4">
-          {/* presets */}
+          {/* presets — full themes, not just accents */}
           <section>
-            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-ink-3">Accent presets</h3>
+            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-ink-3">Presets</h3>
             <div className="flex flex-wrap gap-1.5">
-              {PRESETS.map((p) => (
+              {STUDIO_PRESETS.map((p) => (
                 <button
                   key={p.name}
-                  onClick={() => setTheme({ ...theme, accent: p.accent })}
+                  onClick={() => setTheme(p.theme)}
                   title={p.name}
                   className={`flex h-7 items-center gap-1.5 rounded-full px-2 text-[11px] transition-all ${
-                    theme.accent === p.accent
+                    theme === p.theme
                       ? "bg-ink text-surface"
                       : "bg-hover text-ink-2 hover:bg-hover-2"
                   }`}
                 >
-                  <span className="size-3 rounded-full ring-1 ring-black/10" style={{ background: p.accent }} />
+                  <span className="flex -space-x-1">
+                    <span
+                      className="size-3 rounded-full ring-1 ring-black/10"
+                      style={{ background: `oklch(0.7 ${0.03 * p.theme.tint} ${p.theme.hue})` }}
+                    />
+                    <span
+                      className="size-3 rounded-full ring-1 ring-black/10"
+                      style={{ background: p.theme.accent }}
+                    />
+                  </span>
                   {p.name}
                 </button>
               ))}
             </div>
           </section>
 
+          {/* neutrals — the actual theme of a monochrome system */}
+          <section className="space-y-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Neutrals</h3>
+            <SliderRow
+              label="Hue"
+              value={theme.hue}
+              min={0}
+              max={360}
+              display={`${Math.round(theme.hue)}°`}
+              onChange={(v) => set({ hue: v })}
+              track={hueTrack}
+            />
+            <SliderRow
+              label="Tint"
+              value={theme.tint}
+              min={0}
+              max={2}
+              step={0.05}
+              display={`${Math.round(theme.tint * 100)}%`}
+              onChange={(v) => set({ tint: v })}
+              track={tintTrack}
+            />
+          </section>
+
           {/* colors */}
           <section className="space-y-3">
-            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Semantic colors</h3>
-            <ColorField label="Accent" value={theme.accent} onChange={(v) => setTheme({ ...theme, accent: v })} />
-            <ColorField label="Success" value={theme.green} onChange={(v) => setTheme({ ...theme, green: v })} />
-            <ColorField label="Warning" value={theme.orange} onChange={(v) => setTheme({ ...theme, orange: v })} />
-            <ColorField label="Danger" value={theme.red} onChange={(v) => setTheme({ ...theme, red: v })} />
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Colors</h3>
+            <ColorField label="Accent" value={theme.accent} onChange={(v) => set({ accent: v })} />
+            <ColorField label="Success" value={theme.green} onChange={(v) => set({ green: v })} />
+            <ColorField label="Warning" value={theme.orange} onChange={(v) => set({ orange: v })} />
+            <ColorField label="Danger" value={theme.red} onChange={(v) => set({ red: v })} />
           </section>
 
-          {/* radius */}
-          <section>
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Radius</h3>
-              <span className="font-mono text-[11px] tabular-nums text-ink-3">{theme.radius}px</span>
-            </div>
-            <input
-              type="range"
+          {/* shape */}
+          <section className="space-y-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Shape</h3>
+            <SliderRow
+              label="Radius"
+              value={theme.radius}
               min={0}
               max={24}
-              step={1}
-              value={theme.radius}
-              onChange={(e) => setTheme({ ...theme, radius: Number(e.target.value) })}
-              className="pg-range w-full"
+              display={`${theme.radius}px`}
+              onChange={(v) => set({ radius: v })}
             />
-            <div className="mt-2 flex justify-between font-mono text-[10px] text-ink-3">
-              <span>Sharp</span>
-              <span>Rounded</span>
+            <SliderRow
+              label="Borders"
+              value={theme.borders}
+              min={-1}
+              max={1}
+              step={0.05}
+              display={theme.borders === 0 ? "Default" : theme.borders < 0 ? "Softer" : "Stronger"}
+              onChange={(v) => set({ borders: v })}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-[12.5px] text-ink-2">Shadows</span>
+              <SegmentedControl
+                options={["Default", "Flat"]}
+                value={theme.flat ? "Flat" : "Default"}
+                onChange={(v) => set({ flat: v === "Flat" })}
+              />
             </div>
           </section>
 
-          <button
-            onClick={() => setTheme(DEFAULT_THEME)}
-            className="w-full rounded-control border border-line py-2 text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-hover hover:text-ink"
-          >
-            Reset tokens
-          </button>
+          <div className="space-y-2">
+            <button
+              onClick={copyTokens}
+              className="w-full rounded-control bg-accent py-2 text-[12.5px] font-medium text-white shadow-btn transition-transform active:scale-[0.98]"
+            >
+              {copied ? "Copied to clipboard" : "Copy tokens"}
+            </button>
+            <button
+              onClick={() => setTheme(DEFAULT_STUDIO_THEME)}
+              className="w-full rounded-control border border-line py-2 text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-hover hover:text-ink"
+            >
+              Reset tokens
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -354,7 +413,7 @@ function DemoSurface({ children, className = "" }: { children: ReactNode; classN
 export function Playground({ sources }: { sources: Record<string, string> }) {
   const [mode, setMode] = useState<"grid" | "focus">("focus");
   const [selected, setSelected] = useState<string>(PLAYGROUND[0].id);
-  const [theme, setTheme] = useState<ThemeState>(DEFAULT_THEME);
+  const [theme, setTheme] = useState<StudioTheme>(DEFAULT_STUDIO_THEME);
   const [studioOpen, setStudioOpen] = useState(false);
   const [codeOpen, setCodeOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -384,7 +443,7 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
     );
   }, [query]);
 
-  const cssVars = useMemo(() => themeVars(theme), [theme]);
+  const themeCSS = useMemo(() => buildThemeCSS(theme), [theme]);
 
   const focusItem = (id: string) => {
     setSelected(id);
@@ -396,7 +455,8 @@ export function Playground({ sources }: { sources: Record<string, string> }) {
     sources[p.file ?? p.title.replace(" ", "")] ?? "";
 
   return (
-    <div className="min-h-screen bg-canvas text-ink" style={cssVars as CSSProperties}>
+    <div className="studio-theme min-h-screen bg-canvas text-ink">
+      <style>{themeCSS}</style>
       <style>{`
         .pg-range{-webkit-appearance:none;appearance:none;height:4px;border-radius:999px;
           background:var(--line);outline:none;cursor:pointer}
