@@ -59,11 +59,13 @@ app/
   layout.tsx               fonts (Inter + JetBrains Mono), theme boot
   page.tsx                 the gallery
   harness/page.tsx         the harness route
+  playground/page.tsx      the interactive component studio (/playground)
 components/
   primitives/*             the library — one self-contained file per primitive
   site/*                   the shell/chrome (harness, gallery grid, theme, sounds)
 lib/
   meta.ts, registry.tsx    the gallery catalog
+  playground.tsx           the studio catalog — every component + its props schema
 ```
 
 The primitives are the product. Each file under `components/primitives/` is
@@ -71,10 +73,23 @@ designed to be pasted into another project with no dependency beyond the
 foundation stylesheet `app/globals.css` — copy that once first (see
 [One-time setup](#one-time-setup)), then paste any component on top.
 
+### The component studio (`/playground`)
+
+A live, hero-ui-style catalog:
+
+- **Browse** — sidebar groups every component by category (Agent / Data /
+  Atoms), searchable; a **Grid** mode shows all 30 at once.
+- **Props** — each playable ships a control schema (`lib/playground.tsx`); the
+  right-hand panel renders segmented controls, switches, sliders and text
+  inputs that re-render the live component, plus a **View code** source overlay.
+- **Theme studio** — pick accent + semantic colors and a radius; the tokens
+  are rewritten as CSS variables on the wrapper, so every component re-skins in
+  place. Presets for Indigo / Blue / Violet / Emerald / Teal / Rose / Amber / Slate.
+
 ## The design system
 
-Tokens live in `app/globals.css` as Tailwind v4 `@theme` variables, themed for
-light and dark from the same source:
+Tokens live in `packages/beautiful-ui/src/styles.css` as Tailwind v4 `@theme`
+variables, themed for light and dark from the same source:
 
 - **Cool, blue-tinted neutrals**, solid hairline borders (not alpha), one blue
   accent, semantic color (green/orange/red) used sparingly.
@@ -85,8 +100,8 @@ light and dark from the same source:
 ### One-time setup
 
 A single component is **not** self-contained on its own — it renders on this
-shared foundation stylesheet. Before pasting any primitive, drop
-[`app/globals.css`](https://github.com/slev12397/beautiful-ui/blob/main/app/globals.css)
+shared foundation stylesheet. Before using any primitive, drop
+[`packages/beautiful-ui/src/styles.css`](packages/beautiful-ui/src/styles.css)
 into your project **in full, once**. It contains everything the components rely on:
 
 - `@import "tailwindcss"` and `@import "shadow-plugin/unprefixed"` (the smooth
@@ -99,6 +114,46 @@ into your project **in full, once**. It contains everything the components rely 
 The `:root`/`.dark` variables **alone won't work** — the `@theme inline` block is
 what makes those utility classes exist. It's framework-agnostic: the same file
 works in Vue, Svelte, or plain HTML on Tailwind v4.
+
+### The `beautiful-ui` component library
+
+`packages/beautiful-ui/` is the extractable **component library** — all atoms
+and primitives plus the design token stylesheet, packaged with `tsup` and a
+typed barrel `src/index.ts`. It is self-contained and can be consumed on its
+own. The demo app here pulls from this package's source via the
+`@/components/atoms/*` / `@/components/primitives/*` path aliases in
+`tsconfig.json`, so the gallery and harness exercise the same code that ships.
+
+```bash
+cd packages/beautiful-ui
+npm install        # needs CENTRAL_LICENSE_KEY (see below) if you keep SidebarNav
+npm run build      # tsup → dist/index.{mjs,cjs} + index.d.ts
+```
+
+To use it in another app:
+
+```bash
+npm i beautiful-ui   # or: npm i file:../beautiful-ui
+```
+
+```tsx
+import "beautiful-ui/styles.css"; // the design foundation, once
+import { StreamingText, ApprovalCard, Button } from "beautiful-ui";
+```
+
+`beautiful-ui/styles.css` points at the source stylesheet and builds on Tailwind
+v4 (`@theme inline`) + `shadow-plugin`, so consumers need `tailwindcss@^4` (a
+peer dependency) and should also install `shadow-plugin` for the shadow scale.
+
+> **Heads up — commercial icon set.** `SidebarNav` uses
+> [`@central-icons-react`](https://centralicons.com), a paid icon library with
+> a license check that runs on `npm install`. Set `CENTRAL_LICENSE_KEY` before
+> installing, **or** swap those imports in
+> `packages/beautiful-ui/src/primitives/SidebarNav.tsx` for your own icons.
+> Everything else in the library runs with no configuration. `glimm`, `liveline`,
+> `iconoir-react`, and `posthog-js` are used by
+> `PromptBar`/`InsightCards`/`SelectionActions`/`ChatComposer` and ship as
+> `dependencies` of the package.
 
 ## Wiring the harness to a real agent
 
